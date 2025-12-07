@@ -4,7 +4,6 @@
     "@simpesys/core": "jsr:@simpesys/core"
   },
   "tasks": {
-    "build": "deno bundle app.ts --check --minify -o dist/app.js",
-    "dev": "deno task build && deno run -R -N jsr:@std/http/file-server"
+    "start": "deno run -N -R -E app/main.ts"
   }
 }
