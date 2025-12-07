@@ -8,16 +8,17 @@ import {
   labelInternalLinks,
   prependToc,
 } from "./markdown.ts";
-import type {
-  Breadcrumb,
-  Document,
-  DocumentDict,
-  DocumentMetadata,
-} from "./document.ts";
+import type { Breadcrumb, Document, DocumentDict } from "./document.ts";
 import { readFile } from "./utils.ts";
 import { type Config, DEFAULT_CONFIG } from "./config.ts";
 import type MarkdownIt from "markdown-it";
 import { getLinkRegex, type LinkReplacer } from "./link.ts";
+import {
+  getFileMetadata,
+  getFreshMetadata,
+  loadMetadata,
+  saveMetadata,
+} from "./metadata.ts";
 
 interface Hooks {
   /**
@@ -78,14 +79,12 @@ export class Simpesys {
   /**
    * Initialize the system by loading and processing documents.
    */
-  async init(): Promise<Simpesys> {
+  async init(options: { syncMetadata?: boolean } = {}): Promise<Simpesys> {
     await this.hooks.beforeInit?.();
 
     const written: Set<string> = new Set([this.config.docs.root]);
 
-    const metadata: Record<string, DocumentMetadata> = JSON.parse(
-      await readFile(`${this.config.project.root}/simpesys.metadata.json`),
-    );
+    const rawMetadata = await loadMetadata(this.config);
 
     const queue = new Denque<{
       filename: string;
@@ -103,10 +102,16 @@ export class Simpesys {
       const { filename, type, breadcrumbs } = queue.shift()!;
 
       try {
-        let markdown = await readFile(
-          `${this.config.project.docs}/${filename}.md`,
+        const docPath = `${this.config.project.docs}/${filename}.md`;
+
+        const metadata = await getFileMetadata(docPath);
+        rawMetadata[filename] = getFreshMetadata(
+          filename,
+          rawMetadata,
+          metadata,
         );
 
+        let markdown = await readFile(docPath);
         markdown = this.hooks.manipulateMarkdown?.(markdown) ?? markdown;
 
         const title = markdown.match(/^#\s.*/)![0].replace(/^#\s/, "");
@@ -120,9 +125,8 @@ export class Simpesys {
           children: [],
           referred: [],
           type,
-          createdAt: metadata[filename]?.createdAt,
-          updatedAt: metadata[filename]?.updatedAt ??
-            metadata[filename]?.createdAt,
+          createdAt: rawMetadata[filename].createdAt,
+          updatedAt: rawMetadata[filename].updatedAt,
         };
 
         this.documents[filename] = document;
@@ -140,6 +144,16 @@ export class Simpesys {
       } catch {
         continue;
       }
+    }
+
+    if (options?.syncMetadata) {
+      for (const key of Object.keys(rawMetadata)) {
+        if (!this.documents[key]) {
+          delete rawMetadata[key];
+        }
+      }
+
+      await saveMetadata(this.config, rawMetadata);
     }
 
     for (const document of Object.values(this.documents)) {

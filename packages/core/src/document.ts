@@ -12,11 +12,6 @@ export interface Document {
   updatedAt?: Temporal.Instant;
 }
 
-export interface DocumentMetadata {
-  createdAt: Temporal.Instant;
-  updatedAt?: Temporal.Instant;
-}
-
 export interface Breadcrumb {
   filename: string; // without extension
   title: string;
