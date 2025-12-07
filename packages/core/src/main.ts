@@ -27,7 +27,10 @@ interface Hooks {
   /**
    * A hook to manipulate the markdown content before processing.
    */
-  manipulateMarkdown?: (candidate: DocumentCandidate) => string;
+  manipulateMarkdown?: (
+    markdown: string,
+    candidate: DocumentCandidate,
+  ) => string;
 }
 
 export class Simpesys {
@@ -105,7 +108,8 @@ export class Simpesys {
         );
 
         let markdown = await Deno.readTextFile(docPath);
-        markdown = this.hooks.manipulateMarkdown?.(candidate) ?? markdown;
+        markdown = this.hooks.manipulateMarkdown?.(markdown, candidate) ??
+          markdown;
 
         const title = markdown.match(/^#\s.*/)![0].replace(/^#\s/, "");
 
