@@ -146,7 +146,7 @@ export class Simpesys {
 
     if (options?.syncMetadata) {
       for (const key of Object.keys(rawMetadata)) {
-        if (!this.documents[key]) {
+        if (!this.documents[key] || key.startsWith("private/")) {
           delete rawMetadata[key];
         }
       }

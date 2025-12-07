@@ -17,7 +17,6 @@ export type Metadata = Record<string, DocumentMetadata>;
 
 /**
  * Legacy document metadata format for backwards compatibility.
- * @internal
  */
 interface LegacyDocumentMetadata {
   createdAt: Temporal.Instant;
