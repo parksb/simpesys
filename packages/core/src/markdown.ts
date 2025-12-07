@@ -247,12 +247,9 @@ export const findReferences = (config: Config, markdown: string) => {
   const extractKey = (link: string) =>
     parseLink(link, config.docs.linkStyle).key;
 
-  return [
-    ...new Set([
-      ...(markdown.match(regex.normal)?.map(extractKey) || []),
-      ...(markdown.match(regex.labeled)?.map(extractKey) || []),
-    ]),
-  ];
+  return Array.from(
+    new Set(markdown.match(regex.all)?.map(extractKey) || []),
+  );
 };
 
 /**
