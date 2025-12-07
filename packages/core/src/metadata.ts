@@ -16,14 +16,6 @@ export interface DocumentMetadata {
 export type Metadata = Record<string, DocumentMetadata>;
 
 /**
- * Legacy document metadata format for backwards compatibility.
- */
-interface LegacyDocumentMetadata {
-  createdAt: Temporal.Instant;
-  updatedAt?: Temporal.Instant;
-}
-
-/**
  * Load metadata from a JSON file.
  */
 export async function loadMetadata(config: Config): Promise<Metadata> {
@@ -32,7 +24,7 @@ export async function loadMetadata(config: Config): Promise<Metadata> {
       path.join(config.project.root, METADATA_FILENAME),
     );
 
-    const raw = JSON.parse(content) as Record<string, LegacyDocumentMetadata>;
+    const raw = JSON.parse(content) as Record<string, DocumentMetadata>;
 
     const metadata: Metadata = {};
     for (const [key, value] of Object.entries(raw)) {
