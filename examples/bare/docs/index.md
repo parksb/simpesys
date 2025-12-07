@@ -16,6 +16,7 @@ Ut at tortor a dolor ultricies euismod.
 ## Subpages
 
 - [[ipsum]]
+- [[code]]
 - [[404]]
 
 ### Publications
