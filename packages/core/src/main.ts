@@ -18,28 +18,14 @@ import {
   loadMetadata,
   saveMetadata,
 } from "./metadata.ts";
-
-type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
-};
-
-interface Hooks {
-  /**
-   * A hook to manipulate the markdown content before processing.
-   */
-  manipulateMarkdown?: (
-    markdown: string,
-    candidate: DocumentCandidate,
-  ) => string;
-}
+import type { Context, DeepPartial, Hooks } from "./types.ts";
 
 export class Simpesys {
   private markdownConverter: MarkdownIt;
 
   private documents: DocumentDict = {};
   private written: Set<string> = new Set([]);
-  private config: Config = DEFAULT_CONFIG;
-  private hooks: Hooks = {};
+  private context: Context = { ...DEFAULT_CONFIG, hooks: {} };
 
   private linkReplacer: LinkReplacer;
 
@@ -48,9 +34,7 @@ export class Simpesys {
     hooks: Hooks = {},
     linkReplacer?: LinkReplacer,
   ) {
-    this.hooks = hooks;
-
-    this.config = {
+    this.context = {
       docs: {
         ...DEFAULT_CONFIG.docs,
         ...config.docs,
@@ -63,9 +47,12 @@ export class Simpesys {
         ...DEFAULT_CONFIG.project,
         ...config.project,
       },
+      hooks: {
+        ...hooks,
+      },
     };
 
-    this.markdownConverter = getMarkdownConverter(this.config);
+    this.markdownConverter = getMarkdownConverter(this.context);
 
     this.linkReplacer = linkReplacer ?? {
       normal: (key: string) => `<a href="/${key}">${key}</a>`,
@@ -81,13 +68,13 @@ export class Simpesys {
       throw new Error("Simpesys has already been initialized.");
     }
 
-    this.written.add(this.config.docs.root);
+    this.written.add(this.context.docs.root);
 
-    const rawMetadata = await loadMetadata(this.config);
+    const rawMetadata = await loadMetadata(this.context);
 
     const queue = new Denque<DocumentCandidate>([
       {
-        filename: this.config.docs.root,
+        filename: this.context.docs.root,
         type: "subject",
         breadcrumbs: [],
       },
@@ -98,7 +85,7 @@ export class Simpesys {
       const { filename, type, breadcrumbs } = candidate;
 
       try {
-        const docPath = `${this.config.project.docs}/${filename}.md`;
+        const docPath = `${this.context.project.docs}/${filename}.md`;
 
         const metadata = await getFileMetadata(docPath);
         rawMetadata[filename] = getFreshMetadata(
@@ -108,8 +95,9 @@ export class Simpesys {
         );
 
         let markdown = await Deno.readTextFile(docPath);
-        markdown = this.hooks.manipulateMarkdown?.(markdown, candidate) ??
-          markdown;
+        markdown =
+          this.context.hooks?.manipulateMarkdown?.(markdown, candidate) ??
+            markdown;
 
         const title = markdown.match(/^#\s.*/)![0].replace(/^#\s/, "");
 
@@ -128,7 +116,7 @@ export class Simpesys {
 
         this.documents[filename] = document;
 
-        for (const subdoc of findSubdocs(this.config, markdown, type)) {
+        for (const subdoc of findSubdocs(this.context, markdown, type)) {
           if (!this.written.has(subdoc.filename)) {
             queue.push({
               filename: subdoc.filename,
@@ -151,22 +139,22 @@ export class Simpesys {
         }
       }
 
-      await saveMetadata(this.config, rawMetadata);
+      await saveMetadata(this.context, rawMetadata);
     }
 
     for (const document of Object.values(this.documents)) {
       document.markdown = labelInternalLinks(
-        this.config,
+        this.context,
         document.markdown,
         this.documents,
         document.filename,
       );
 
-      for (const reference of findReferences(this.config, document.markdown)) {
+      for (const reference of findReferences(this.context, document.markdown)) {
         this.documents[reference].referred.push({
           document,
           sentences: findReferredSentences(
-            this.config,
+            this.context,
             document.markdown,
             this.documents[reference].filename,
             this.documents,
@@ -177,7 +165,7 @@ export class Simpesys {
 
     for (const document of Object.values(this.documents)) {
       document.markdown = appendReferred(
-        this.config,
+        this.context,
         document.markdown,
         document.referred,
         this.documents,
@@ -186,12 +174,12 @@ export class Simpesys {
       document.html = this.markdownConverter
         .render(document.markdown)
         .replace(
-          getLinkRegex(this.config.docs.linkStyle).labeled,
+          getLinkRegex(this.context.docs.linkStyle).labeled,
           (_: string, key: string, label: string) =>
             this.linkReplacer.labeled(key, label),
         )
         .replace(
-          getLinkRegex(this.config.docs.linkStyle).normal,
+          getLinkRegex(this.context.docs.linkStyle).normal,
           (_: string, key: string) => this.linkReplacer.normal(key),
         );
     }
@@ -217,6 +205,6 @@ export class Simpesys {
    * Get the applied configuration.
    */
   getConfig(): Config {
-    return this.config;
+    return this.context;
   }
 }

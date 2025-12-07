@@ -2,14 +2,14 @@ import { beforeEach, describe, it } from "@std/testing/bdd";
 import { expect } from "@std/expect";
 import { DEFAULT_CONFIG } from "../../src/config.ts";
 import { findSubdocs } from "../../src/markdown.ts";
-import type { Config } from "../../src/config.ts";
+import type { Context } from "../../src/types.ts";
 
 describe("findSubdocs", () => {
   describe("with simpesys link style", () => {
-    let config: Config;
+    let config: Context;
 
     beforeEach(() => {
-      config = DEFAULT_CONFIG;
+      config = { ...DEFAULT_CONFIG, hooks: {} };
     });
 
     it("should find subdocuments in subdocs section", () => {
@@ -91,7 +91,7 @@ Some content without subpages.
     });
 
     it("should use custom section title from config", () => {
-      const customConfig = {
+      const customConfig: Context = {
         ...config,
         docs: {
           ...config.docs,
@@ -112,7 +112,7 @@ Some content without subpages.
   });
 
   describe("with obsidian link style", () => {
-    let config: Config;
+    let config: Context;
 
     beforeEach(() => {
       config = {
@@ -121,6 +121,7 @@ Some content without subpages.
           ...DEFAULT_CONFIG.docs,
           linkStyle: "obsidian" as const,
         },
+        hooks: {},
       };
     });
 

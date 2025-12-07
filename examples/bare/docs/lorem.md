@@ -1,7 +1,7 @@
 # Lorem
 
-Lorem [[ipsum]]{ipsum} [[dolor]] sit amet, consectetur adipiscing elit. Quisque
-a elit porta, porta justo eu, vestibulum est. Duis fringilla justo ut erat
+Lorem [[ipsum]]{ipsum} dolor sit amet, consectetur adipiscing elit. Quisque a
+elit porta, porta justo eu, vestibulum est. Duis fringilla justo ut erat
 hendrerit, vitae elementum nulla dignissim. Nulla sed ornare mauris.
 Pellentesque laoreet mi magna, molestie condimentum ante malesuada id. Proin
 ornare, risus a tempor condimentum, enim tellus gravida lorem, nec luctus ex

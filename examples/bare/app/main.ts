@@ -1,7 +1,14 @@
 import { Simpesys } from "@simpesys/core";
 import { Context, Hono } from "@hono/hono";
 
-const simpesys = await new Simpesys().init({ syncMetadata: true });
+const simpesys = await new Simpesys(
+  {},
+  {
+    onInternalLinkUnresolved: (link) => {
+      console.warn(`Unresolved internal link: ${link}`);
+    },
+  },
+).init({ syncMetadata: true });
 const app = new Hono();
 
 function documentResponse(id: string, c: Context) {

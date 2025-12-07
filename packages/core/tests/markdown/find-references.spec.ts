@@ -2,14 +2,14 @@ import { beforeEach, describe, it } from "@std/testing/bdd";
 import { expect } from "@std/expect";
 import { DEFAULT_CONFIG } from "../../src/config.ts";
 import { findReferences } from "../../src/markdown.ts";
-import type { Config } from "../../src/config.ts";
+import type { Context } from "../../src/types.ts";
 
 describe("findReferences", () => {
   describe("with simpesys link style", () => {
-    let config: Config;
+    let config: Context;
 
     beforeEach(() => {
-      config = DEFAULT_CONFIG;
+      config = { ...DEFAULT_CONFIG, hooks: {} };
     });
 
     it("should find all references in markdown", () => {
@@ -27,7 +27,7 @@ describe("findReferences", () => {
   });
 
   describe("with obsidian link style", () => {
-    let config: Config;
+    let config: Context;
 
     beforeEach(() => {
       config = {
@@ -36,6 +36,7 @@ describe("findReferences", () => {
           ...DEFAULT_CONFIG.docs,
           linkStyle: "obsidian" as const,
         },
+        hooks: {},
       };
     });
 

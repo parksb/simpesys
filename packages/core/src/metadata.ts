@@ -1,5 +1,5 @@
 import * as path from "node:path";
-import type { Config } from "./config.ts";
+import type { Context } from "./types.ts";
 import { METADATA_FILENAME } from "./consts.ts";
 
 /**
@@ -18,10 +18,10 @@ export type Metadata = Record<string, DocumentMetadata>;
 /**
  * Load metadata from a JSON file.
  */
-export async function loadMetadata(config: Config): Promise<Metadata> {
+export async function loadMetadata(context: Context): Promise<Metadata> {
   try {
     const content = await Deno.readTextFile(
-      path.join(config.project.root, METADATA_FILENAME),
+      path.join(context.project.root, METADATA_FILENAME),
     );
 
     const raw = JSON.parse(content) as Record<string, DocumentMetadata>;
@@ -46,11 +46,11 @@ export async function loadMetadata(config: Config): Promise<Metadata> {
  * Save metadata to a JSON file.
  */
 export async function saveMetadata(
-  config: Config,
+  context: Context,
   metadata: Metadata,
 ): Promise<void> {
   await Deno.writeTextFile(
-    path.join(config.project.root, METADATA_FILENAME),
+    path.join(context.project.root, METADATA_FILENAME),
     JSON.stringify(metadata, null, 2),
   );
 }

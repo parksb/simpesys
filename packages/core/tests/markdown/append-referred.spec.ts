@@ -2,8 +2,8 @@ import { beforeEach, describe, it } from "@std/testing/bdd";
 import { expect } from "@std/expect";
 import { DEFAULT_CONFIG } from "../../src/config.ts";
 import { appendReferred } from "../../src/markdown.ts";
-import type { Config } from "../../src/config.ts";
 import type { Document, DocumentDict, Reference } from "../../src/document.ts";
+import type { Context } from "../../src/types.ts";
 
 describe("appendReferred", () => {
   let dict: DocumentDict;
@@ -27,10 +27,10 @@ describe("appendReferred", () => {
   });
 
   describe("with simpesys link style", () => {
-    let config: Config;
+    let config: Context;
 
     beforeEach(() => {
-      config = DEFAULT_CONFIG;
+      config = { ...DEFAULT_CONFIG, hooks: {} };
     });
 
     it("should return markdown unchanged when no references", () => {
@@ -90,7 +90,7 @@ describe("appendReferred", () => {
   });
 
   describe("with obsidian link style", () => {
-    let config: Config;
+    let config: Context;
 
     beforeEach(() => {
       config = {
@@ -99,6 +99,7 @@ describe("appendReferred", () => {
           ...DEFAULT_CONFIG.docs,
           linkStyle: "obsidian" as const,
         },
+        hooks: {},
       };
     });
 

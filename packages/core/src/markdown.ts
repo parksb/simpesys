@@ -14,13 +14,13 @@ import { full as mdEmoji } from "markdown-it-emoji";
 import * as katex from "katex";
 
 import type { Document, DocumentDict, Reference } from "./document.ts";
-import type { Config } from "./config.ts";
+import type { Context } from "./types.ts";
 import { getLink, getLinkRegex, parseLink } from "./link.ts";
 
 /**
  * Create a MarkdownIt converter with predefined plugins and options.
  */
-export function getMarkdownConverter(config: Config) {
+export function getMarkdownConverter(context: Context) {
   const md = MarkdownIt({
     html: true,
     xhtmlOut: false,
@@ -82,7 +82,7 @@ export function getMarkdownConverter(config: Config) {
     })
     .use(mdExternalLink, {
       externalClassName: "external",
-      internalDomains: [config.web.domain.replace(/https?:\/\//, "")],
+      internalDomains: [context.web.domain.replace(/https?:\/\//, "")],
     });
 
   return md;
@@ -101,7 +101,7 @@ export const prependToc = (markdown: string) => {
  * Append the referred documents to the markdown.
  */
 export const appendReferred = (
-  config: Config,
+  context: Context,
   markdown: string,
   referred: Reference[],
   dict: DocumentDict,
@@ -111,7 +111,7 @@ export const appendReferred = (
   const referredList = referred
     .map(
       ({ document, sentences }) =>
-        `- ${getLink(document.filename, null, config.docs.linkStyle)}${
+        `- ${getLink(document.filename, null, context.docs.linkStyle)}${
           sentences
             .map((sentence) => `\n  - > ${sentence}`)
             .join("")
@@ -120,8 +120,8 @@ export const appendReferred = (
     .join("\n");
 
   return labelInternalLinks(
-    config,
-    `${markdown}\n\n## ${config.docs.backlinksSectionTitle}\n\n${referredList}`,
+    context,
+    `${markdown}\n\n## ${context.docs.backlinksSectionTitle}\n\n${referredList}`,
     dict,
   );
 };
@@ -130,12 +130,12 @@ export const appendReferred = (
  * Find the sentences that refer to the word.
  */
 export const findReferredSentences = (
-  config: Config,
+  context: Context,
   markdown: string,
   word: string,
   dict: DocumentDict,
 ) => {
-  const regex = getLinkRegex(config.docs.linkStyle);
+  const regex = getLinkRegex(context.docs.linkStyle);
   const linkPattern = regex.forKey(word);
   const labeledLinkPattern = regex.forKeyLabeled(word);
 
@@ -152,7 +152,7 @@ export const findReferredSentences = (
         linkPattern.lastIndex = 0;
         return linkPattern.test(sentence);
       })
-      .map((sentence) => labelInternalLinks(config, sentence, dict))
+      .map((sentence) => labelInternalLinks(context, sentence, dict))
       .map((sentence) => sentence.replace(labeledLinkPattern, "<b>$1</b>"))
       .filter(
         (sentence) =>
@@ -170,27 +170,27 @@ export const findReferredSentences = (
  * ```
  */
 export const findSubdocs = (
-  config: Config,
+  context: Context,
   markdown: string,
   type: Document["type"],
 ) => {
   const subdocs: { filename: string; type: Document["type"] }[] = [];
   const subdocSection = new RegExp(
-    `##\\s${config.docs.subdocumentsSectionTitle}\\s*\\n+([\\s\\S]*?)(?=\\n##\\s|$)`,
+    `##\\s${context.docs.subdocumentsSectionTitle}\\s*\\n+([\\s\\S]*?)(?=\\n##\\s|$)`,
   ).exec(markdown);
 
   if (!subdocSection) return subdocs;
 
-  const regex = getLinkRegex(config.docs.linkStyle);
+  const regex = getLinkRegex(context.docs.linkStyle);
   let isPublicationSeciton = false;
   for (const line of subdocSection[1].trim().split("\n")) {
-    if (line.trim() === `### ${config.docs.publicationsSectionTitle}`) {
+    if (line.trim() === `### ${context.docs.publicationsSectionTitle}`) {
       isPublicationSeciton = true;
     }
 
     const match = line.match(regex.listItem);
     if (match) {
-      const { key: filename } = parseLink(match[2], config.docs.linkStyle);
+      const { key: filename } = parseLink(match[2], context.docs.linkStyle);
       subdocs.push({
         filename,
         type: isPublicationSeciton ? "publication" : type,
@@ -205,15 +205,15 @@ export const findSubdocs = (
  * Label the internal links in the markdown.
  */
 export const labelInternalLinks = (
-  config: Config,
+  context: Context,
   markdown: string,
   dict: DocumentDict,
   parent?: string,
 ) => {
-  const regex = getLinkRegex(config.docs.linkStyle);
+  const regex = getLinkRegex(context.docs.linkStyle);
 
   return markdown.replace(regex.all, (match) => {
-    const { key, label } = parseLink(match, config.docs.linkStyle);
+    const { key, label } = parseLink(match, context.docs.linkStyle);
 
     try {
       if (!dict[key]) {
@@ -222,19 +222,25 @@ export const labelInternalLinks = (
 
       if (label) return match;
 
-      return getLink(key, dict[key].title, config.docs.linkStyle);
-    } catch {
-      if (label) {
-        return getLink(config.docs.notFound, label, config.docs.linkStyle);
+      return getLink(key, dict[key].title, context.docs.linkStyle);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        context.hooks?.onInternalLinkUnresolved?.(e);
       }
+
+      if (label) {
+        return getLink(context.docs.notFound, label, context.docs.linkStyle);
+      }
+
       if (key.startsWith("private/")) {
         return getLink(
-          config.docs.notFound,
+          context.docs.notFound,
           key.replace(/./g, "*"),
-          config.docs.linkStyle,
+          context.docs.linkStyle,
         );
       }
-      return getLink(config.docs.notFound, key, config.docs.linkStyle);
+
+      return getLink(context.docs.notFound, key, context.docs.linkStyle);
     }
   });
 };
@@ -242,14 +248,12 @@ export const labelInternalLinks = (
 /**
  * Find the documents this markdown references.
  */
-export const findReferences = (config: Config, markdown: string) => {
-  const regex = getLinkRegex(config.docs.linkStyle);
+export const findReferences = (context: Context, markdown: string) => {
+  const regex = getLinkRegex(context.docs.linkStyle);
   const extractKey = (link: string) =>
-    parseLink(link, config.docs.linkStyle).key;
+    parseLink(link, context.docs.linkStyle).key;
 
-  return Array.from(
-    new Set(markdown.match(regex.all)?.map(extractKey) || []),
-  );
+  return Array.from(new Set(markdown.match(regex.all)?.map(extractKey) || []));
 };
 
 /**
