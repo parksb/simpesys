@@ -1,0 +1,13 @@
+{
+  "workspace": [
+    "packages/*",
+    "examples/*"
+  ],
+  "imports": {
+    "@simpesys/core": "./packages/core/",
+    "@simpesys/cli": "./packages/cli/"
+  },
+  "unstable": [
+    "temporal"
+  ]
+}

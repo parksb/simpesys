@@ -1,0 +1,10 @@
+{
+  "imports": {
+    "@hono/hono": "jsr:@hono/hono@^4.10.7",
+    "@simpesys/core": "jsr:@simpesys/core"
+  },
+  "tasks": {
+    "build": "deno bundle app.ts --check --minify -o dist/app.js",
+    "dev": "deno task build && deno run -R -N jsr:@std/http/file-server"
+  }
+}
