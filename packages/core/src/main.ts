@@ -20,6 +20,10 @@ import {
   saveMetadata,
 } from "./metadata.ts";
 
+type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
+
 interface Hooks {
   /**
    * A hook that runs before initialization.
@@ -47,12 +51,10 @@ export class Simpesys {
   private linkReplacer: LinkReplacer;
 
   constructor(
-    config: Partial<Config> = {},
+    config: DeepPartial<Config> = {},
     hooks: Hooks = {},
     linkReplacer?: LinkReplacer,
   ) {
-    this.markdownConverter = getMarkdownConverter(this.config);
-
     this.hooks = hooks;
 
     this.config = {
@@ -69,6 +71,8 @@ export class Simpesys {
         ...config.project,
       },
     };
+
+    this.markdownConverter = getMarkdownConverter(this.config);
 
     this.linkReplacer = linkReplacer ?? {
       normal: (key: string) => `<a href="/${key}">${key}</a>`,

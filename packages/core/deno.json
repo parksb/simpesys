@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "license": "GPL-3.0",
   "exports": "./mod.ts",
-  "exclude": [
-    "tests/",
-    "cov_profile/"
-  ],
+  "publish": {
+    "exclude": [
+      "tests/",
+      "cov_profile/"
+    ]
+  },
   "imports": {
     "@markslides/markdown-it-mermaid": "npm:@markslides/markdown-it-mermaid@^0.3.6",
     "@std/expect": "jsr:@std/expect@^1.0.17",
