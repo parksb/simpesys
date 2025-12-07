@@ -8,8 +8,7 @@ import {
   labelInternalLinks,
   prependToc,
 } from "./markdown.ts";
-import type { Breadcrumb, Document, DocumentDict } from "./document.ts";
-import { readFile } from "./utils.ts";
+import type { Document, DocumentCandidate, DocumentDict } from "./document.ts";
 import { type Config, DEFAULT_CONFIG } from "./config.ts";
 import type MarkdownIt from "markdown-it";
 import { getLinkRegex, type LinkReplacer } from "./link.ts";
@@ -26,25 +25,16 @@ type DeepPartial<T> = {
 
 interface Hooks {
   /**
-   * A hook that runs before initialization.
-   */
-  beforeInit?: () => Promise<void>;
-
-  /**
    * A hook to manipulate the markdown content before processing.
    */
-  manipulateMarkdown?: (markdown: string) => string;
-
-  /**
-   * A hook that runs after initialization.
-   */
-  afterInit?: (system: Simpesys) => Promise<void>;
+  manipulateMarkdown?: (candidate: DocumentCandidate) => string;
 }
 
 export class Simpesys {
   private markdownConverter: MarkdownIt;
 
   private documents: DocumentDict = {};
+  private written: Set<string> = new Set([]);
   private config: Config = DEFAULT_CONFIG;
   private hooks: Hooks = {};
 
@@ -84,17 +74,15 @@ export class Simpesys {
    * Initialize the system by loading and processing documents.
    */
   async init(options: { syncMetadata?: boolean } = {}): Promise<Simpesys> {
-    await this.hooks.beforeInit?.();
+    if (this.written.size > 0) {
+      throw new Error("Simpesys has already been initialized.");
+    }
 
-    const written: Set<string> = new Set([this.config.docs.root]);
+    this.written.add(this.config.docs.root);
 
     const rawMetadata = await loadMetadata(this.config);
 
-    const queue = new Denque<{
-      filename: string;
-      type: Document["type"];
-      breadcrumbs: Breadcrumb[];
-    }>([
+    const queue = new Denque<DocumentCandidate>([
       {
         filename: this.config.docs.root,
         type: "subject",
@@ -103,7 +91,8 @@ export class Simpesys {
     ]);
 
     while (queue.length > 0) {
-      const { filename, type, breadcrumbs } = queue.shift()!;
+      const candidate = queue.shift()!;
+      const { filename, type, breadcrumbs } = candidate;
 
       try {
         const docPath = `${this.config.project.docs}/${filename}.md`;
@@ -115,8 +104,8 @@ export class Simpesys {
           metadata,
         );
 
-        let markdown = await readFile(docPath);
-        markdown = this.hooks.manipulateMarkdown?.(markdown) ?? markdown;
+        let markdown = await Deno.readTextFile(docPath);
+        markdown = this.hooks.manipulateMarkdown?.(candidate) ?? markdown;
 
         const title = markdown.match(/^#\s.*/)![0].replace(/^#\s/, "");
 
@@ -136,13 +125,14 @@ export class Simpesys {
         this.documents[filename] = document;
 
         for (const subdoc of findSubdocs(this.config, markdown, type)) {
-          if (!written.has(subdoc.filename)) {
+          if (!this.written.has(subdoc.filename)) {
             queue.push({
               filename: subdoc.filename,
               type: subdoc.type,
               breadcrumbs: document.breadcrumbs,
             });
-            written.add(subdoc.filename);
+
+            this.written.add(subdoc.filename);
           }
         }
       } catch {
@@ -201,8 +191,6 @@ export class Simpesys {
           (_: string, key: string) => this.linkReplacer.normal(key),
         );
     }
-
-    await this.hooks.afterInit?.(this);
 
     return this;
   }

@@ -22,4 +22,9 @@ export interface Reference {
   sentences: string[];
 }
 
+export type DocumentCandidate = Pick<
+  Document,
+  "filename" | "type" | "breadcrumbs"
+>;
+
 export type DocumentDict = Record<string, Document>;
