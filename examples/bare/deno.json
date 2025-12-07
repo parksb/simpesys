@@ -4,6 +4,6 @@
     "@simpesys/core": "jsr:@simpesys/core"
   },
   "tasks": {
-    "start": "deno run -N -R -E app/main.ts"
+    "start": "deno run -N -R -E -W app/main.ts"
   }
 }

@@ -1,7 +1,7 @@
 import { Simpesys } from "@simpesys/core";
 import { Hono } from "@hono/hono";
 
-const simpesys = await new Simpesys().init();
+const simpesys = await new Simpesys().init({ syncMetadata: true });
 const app = new Hono();
 
 app.get("/:id", (c) => {
@@ -17,7 +17,7 @@ app.get("/:id", (c) => {
 });
 
 app.get("/", (c) => {
-  const document = simpesys.getDocument('index')!;
+  const document = simpesys.getDocument("index")!;
   return c.html(document.html);
 });
 
