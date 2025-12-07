@@ -21,7 +21,7 @@ import { getLink, getLinkRegex, parseLink } from "./link.ts";
  * Create a MarkdownIt converter with predefined plugins and options.
  */
 export function getMarkdownConverter(config: Config) {
-  return MarkdownIt({
+  const md = MarkdownIt({
     html: true,
     xhtmlOut: false,
     breaks: false,
@@ -35,9 +35,7 @@ export function getMarkdownConverter(config: Config) {
           hljs.highlight(str, { language: lang }).value
         }</code></pre>`;
       }
-      return `<pre class="hljs"><code>${
-        MarkdownIt.utils.escapeHtml(str)
-      }</code></pre>`;
+      return `<pre class="hljs"><code>${md.utils.escapeHtml(str)}</code></pre>`;
     },
   })
     .use(mdFootnote)
@@ -68,7 +66,7 @@ export function getMarkdownConverter(config: Config) {
         const content = tokens[idx].info.trim().match(/^TOGGLE\s+(.*)$/);
         if (tokens[idx].nesting === 1) {
           return `<details><summary>${
-            MarkdownIt.utils.escapeHtml(
+            md.utils.escapeHtml(
               content[1],
             )
           }</summary>\n`;
@@ -86,6 +84,8 @@ export function getMarkdownConverter(config: Config) {
       externalClassName: "external",
       internalDomains: [config.web.domain.replace(/https?:\/\//, "")],
     });
+
+  return md;
 }
 
 /**
