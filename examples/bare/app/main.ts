@@ -1,11 +1,10 @@
 import { Simpesys } from "@simpesys/core";
-import { Hono } from "@hono/hono";
+import { Context, Hono } from "@hono/hono";
 
 const simpesys = await new Simpesys().init({ syncMetadata: true });
 const app = new Hono();
 
-app.get("/:id", (c) => {
-  const id = c.req.param("id");
+function documentResponse(id: string, c: Context) {
   let document = simpesys.getDocument(id);
 
   if (!document) {
@@ -14,11 +13,20 @@ app.get("/:id", (c) => {
   }
 
   return c.html(document.html);
+}
+
+app.get("/:id", (c) => {
+  const id = c.req.param("id");
+  return documentResponse(id, c);
+});
+
+app.get("/private/:id", (c) => {
+  const id = `private/${c.req.param("id")}`;
+  return documentResponse(id, c);
 });
 
 app.get("/", (c) => {
-  const document = simpesys.getDocument("index")!;
-  return c.html(document.html);
+  return documentResponse("index", c);
 });
 
 Deno.serve(app.fetch);
