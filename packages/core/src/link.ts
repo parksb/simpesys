@@ -40,14 +40,6 @@ export interface ParsedLink {
   label: string | null;
 }
 
-/**
- * Functions to generate links based on style.
- */
-export interface LinkReplacer {
-  normal: (key: string) => string;
-  labeled: (key: string, label: string) => string;
-}
-
 export function getLinkRegex(
   style: LinkStyle,
 ): LinkRegexSet {

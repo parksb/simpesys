@@ -1,9 +1,12 @@
 import { beforeEach, describe, it } from "@std/testing/bdd";
 import { expect } from "@std/expect";
-import { DEFAULT_CONFIG } from "../../src/config.ts";
+import {
+  type Context,
+  DEFAULT_CONFIG,
+  DEFAULT_HOOKS,
+} from "../../src/context.ts";
 import { findReferredSentences } from "../../src/markdown.ts";
 import type { DocumentDict } from "../../src/document.ts";
-import type { Context } from "../../src/types.ts";
 
 describe("findReferredSentences", () => {
   let dict: DocumentDict;
@@ -37,7 +40,7 @@ describe("findReferredSentences", () => {
     let config: Context;
 
     beforeEach(() => {
-      config = { ...DEFAULT_CONFIG, hooks: {} };
+      config = { config: { ...DEFAULT_CONFIG }, hooks: { ...DEFAULT_HOOKS } };
     });
 
     it("should find sentences containing the word", () => {
@@ -80,12 +83,14 @@ describe("findReferredSentences", () => {
 
     beforeEach(() => {
       config = {
-        ...DEFAULT_CONFIG,
-        docs: {
-          ...DEFAULT_CONFIG.docs,
-          linkStyle: "obsidian" as const,
+        config: {
+          ...DEFAULT_CONFIG,
+          docs: {
+            ...DEFAULT_CONFIG.docs,
+            linkStyle: "obsidian" as const,
+          },
         },
-        hooks: {},
+        hooks: { ...DEFAULT_HOOKS },
       };
     });
 

@@ -14,13 +14,15 @@ import { full as mdEmoji } from "markdown-it-emoji";
 import * as katex from "katex";
 
 import type { Document, DocumentDict, Reference } from "./document.ts";
-import type { Context } from "./types.ts";
+import type { Context } from "./context.ts";
 import { getLink, getLinkRegex, parseLink } from "./link.ts";
 
 /**
  * Create a MarkdownIt converter with predefined plugins and options.
  */
 export function getMarkdownConverter(context: Context) {
+  const { config } = context;
+
   const md = MarkdownIt({
     html: true,
     xhtmlOut: false,
@@ -82,7 +84,7 @@ export function getMarkdownConverter(context: Context) {
     })
     .use(mdExternalLink, {
       externalClassName: "external",
-      internalDomains: [context.web.domain.replace(/https?:\/\//, "")],
+      internalDomains: [config.web.domain.replace(/https?:\/\//, "")],
     });
 
   return md;
@@ -108,10 +110,12 @@ export const appendReferred = (
 ) => {
   if (referred.length === 0) return markdown;
 
+  const { config } = context;
+
   const referredList = referred
     .map(
       ({ document, sentences }) =>
-        `- ${getLink(document.filename, null, context.docs.linkStyle)}${
+        `- ${getLink(document.filename, null, config.docs.linkStyle)}${
           sentences
             .map((sentence) => `\n  - > ${sentence}`)
             .join("")
@@ -121,7 +125,7 @@ export const appendReferred = (
 
   return labelInternalLinks(
     context,
-    `${markdown}\n\n## ${context.docs.backlinksSectionTitle}\n\n${referredList}`,
+    `${markdown}\n\n## ${config.docs.backlinksSectionTitle}\n\n${referredList}`,
     dict,
   );
 };
@@ -135,7 +139,9 @@ export const findReferredSentences = (
   word: string,
   dict: DocumentDict,
 ) => {
-  const regex = getLinkRegex(context.docs.linkStyle);
+  const { config } = context;
+
+  const regex = getLinkRegex(config.docs.linkStyle);
   const linkPattern = regex.forKey(word);
   const labeledLinkPattern = regex.forKeyLabeled(word);
 
@@ -174,23 +180,25 @@ export const findSubdocs = (
   markdown: string,
   type: Document["type"],
 ) => {
+  const { config } = context;
+
   const subdocs: { filename: string; type: Document["type"] }[] = [];
   const subdocSection = new RegExp(
-    `##\\s${context.docs.subdocumentsSectionTitle}\\s*\\n+([\\s\\S]*?)(?=\\n##\\s|$)`,
+    `##\\s${config.docs.subdocumentsSectionTitle}\\s*\\n+([\\s\\S]*?)(?=\\n##\\s|$)`,
   ).exec(markdown);
 
   if (!subdocSection) return subdocs;
 
-  const regex = getLinkRegex(context.docs.linkStyle);
+  const regex = getLinkRegex(config.docs.linkStyle);
   let isPublicationSeciton = false;
   for (const line of subdocSection[1].trim().split("\n")) {
-    if (line.trim() === `### ${context.docs.publicationsSectionTitle}`) {
+    if (line.trim() === `### ${config.docs.publicationsSectionTitle}`) {
       isPublicationSeciton = true;
     }
 
     const match = line.match(regex.listItem);
     if (match) {
-      const { key: filename } = parseLink(match[2], context.docs.linkStyle);
+      const { key: filename } = parseLink(match[2], config.docs.linkStyle);
       subdocs.push({
         filename,
         type: isPublicationSeciton ? "publication" : type,
@@ -210,10 +218,12 @@ export const labelInternalLinks = (
   dict: DocumentDict,
   parent?: string,
 ) => {
-  const regex = getLinkRegex(context.docs.linkStyle);
+  const { config, hooks } = context;
+
+  const regex = getLinkRegex(config.docs.linkStyle);
 
   return markdown.replace(regex.all, (match) => {
-    const { key, label } = parseLink(match, context.docs.linkStyle);
+    const { key, label } = parseLink(match, config.docs.linkStyle);
 
     try {
       if (!dict[key]) {
@@ -222,25 +232,25 @@ export const labelInternalLinks = (
 
       if (label) return match;
 
-      return getLink(key, dict[key].title, context.docs.linkStyle);
+      return getLink(key, dict[key].title, config.docs.linkStyle);
     } catch (e: unknown) {
       if (e instanceof Error) {
-        context.hooks?.onInternalLinkUnresolved?.(e);
+        hooks?.onInternalLinkUnresolved?.(e);
       }
 
       if (label) {
-        return getLink(context.docs.notFound, label, context.docs.linkStyle);
+        return getLink(config.docs.notFound, label, config.docs.linkStyle);
       }
 
       if (key.startsWith("private/")) {
         return getLink(
-          context.docs.notFound,
+          config.docs.notFound,
           key.replace(/./g, "*"),
-          context.docs.linkStyle,
+          config.docs.linkStyle,
         );
       }
 
-      return getLink(context.docs.notFound, key, context.docs.linkStyle);
+      return getLink(config.docs.notFound, key, config.docs.linkStyle);
     }
   });
 };
@@ -249,9 +259,11 @@ export const labelInternalLinks = (
  * Find the documents this markdown references.
  */
 export const findReferences = (context: Context, markdown: string) => {
-  const regex = getLinkRegex(context.docs.linkStyle);
+  const { config } = context;
+
+  const regex = getLinkRegex(config.docs.linkStyle);
   const extractKey = (link: string) =>
-    parseLink(link, context.docs.linkStyle).key;
+    parseLink(link, config.docs.linkStyle).key;
 
   return Array.from(new Set(markdown.match(regex.all)?.map(extractKey) || []));
 };

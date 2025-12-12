@@ -1,9 +1,12 @@
 import { beforeEach, describe, it } from "@std/testing/bdd";
 import { expect } from "@std/expect";
-import { DEFAULT_CONFIG } from "../../src/config.ts";
+import {
+  type Context,
+  DEFAULT_CONFIG,
+  DEFAULT_HOOKS,
+} from "../../src/context.ts";
 import { labelInternalLinks } from "../../src/markdown.ts";
 import type { DocumentDict } from "../../src/document.ts";
-import type { Context } from "../../src/types.ts";
 
 describe("labelInternalLinks", () => {
   let dict: DocumentDict;
@@ -47,7 +50,7 @@ describe("labelInternalLinks", () => {
     let config: Context;
 
     beforeEach(() => {
-      config = { ...DEFAULT_CONFIG, hooks: {} };
+      config = { config: { ...DEFAULT_CONFIG }, hooks: { ...DEFAULT_HOOKS } };
     });
 
     it("should add label to unlabeled links", () => {
@@ -94,12 +97,14 @@ describe("labelInternalLinks", () => {
 
     beforeEach(() => {
       config = {
-        ...DEFAULT_CONFIG,
-        docs: {
-          ...DEFAULT_CONFIG.docs,
-          linkStyle: "obsidian" as const,
+        config: {
+          ...DEFAULT_CONFIG,
+          docs: {
+            ...DEFAULT_CONFIG.docs,
+            linkStyle: "obsidian" as const,
+          },
         },
-        hooks: {},
+        hooks: { ...DEFAULT_HOOKS },
       };
     });
 

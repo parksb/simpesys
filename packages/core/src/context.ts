@@ -1,3 +1,4 @@
+import type { DocumentCandidate } from "./document.ts";
 import type { LinkStyle } from "./link.ts";
 
 export interface Config {
@@ -54,6 +55,26 @@ export interface Config {
   };
 }
 
+export interface Hooks {
+  /**
+   * A hook to manipulate the markdown content before processing.
+   */
+  manipulateMarkdown?: (
+    markdown: string,
+    candidate: DocumentCandidate,
+  ) => string;
+
+  /**
+   * A hook that is called when an internal link cannot be resolved.
+   */
+  onInternalLinkUnresolved?: (error: Error) => void;
+
+  /**
+   * A hook to replace labeled internal links in the markdown content.
+   */
+  renderInternalLink: (key: string, label?: string) => string;
+}
+
 export const DEFAULT_CONFIG: Config = {
   web: {
     domain: "localhost:8000",
@@ -71,3 +92,9 @@ export const DEFAULT_CONFIG: Config = {
     backlinksSectionTitle: "Backlinks",
   },
 };
+
+export const DEFAULT_HOOKS: Hooks = {
+  renderInternalLink: (key, label) => `<a href="/${key}">${label ?? key}</a>`,
+};
+
+export type Context = { config: Config; hooks: Hooks };

@@ -13,6 +13,7 @@
     "@markslides/markdown-it-mermaid": "npm:@markslides/markdown-it-mermaid@^0.3.6",
     "@std/expect": "jsr:@std/expect@^1.0.17",
     "@std/testing": "jsr:@std/testing@^1.0.16",
+    "es-toolkit": "npm:es-toolkit@^1.43.0",
     "markdown-it": "npm:markdown-it@^14.1.0",
     "markdown-it-anchor": "npm:markdown-it-anchor@^9.2.0",
     "markdown-it-container": "npm:markdown-it-container@^4.0.0",

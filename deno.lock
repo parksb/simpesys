@@ -16,6 +16,7 @@
     "npm:@types/node@*": "24.2.0",
     "npm:dayjs@^1.11.13": "1.11.13",
     "npm:denque@^2.1.0": "2.1.0",
+    "npm:es-toolkit@^1.43.0": "1.43.0",
     "npm:highlight.js@^11.11.1": "11.11.1",
     "npm:katex@~0.16.22": "0.16.22",
     "npm:markdown-it-anchor@^9.2.0": "9.2.0_@types+markdown-it@14.1.2_markdown-it@14.1.0",
@@ -652,6 +653,9 @@
     "entities@4.5.0": {
       "integrity": "sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw=="
     },
+    "es-toolkit@1.43.0": {
+      "integrity": "sha512-SKCT8AsWvYzBBuUqMk4NPwFlSdqLpJwmy6AP322ERn8W2YLIB6JBXnwMI2Qsh2gfphT3q7EKAxKb23cvFHFwKA=="
+    },
     "exsolve@1.0.5": {
       "integrity": "sha512-pz5dvkYYKQ1AHVrgOzBKWeP4u4FRb3a6DNK2ucr0OoNwYIU4QWsJ+NM36LLzORT+z845MzKHHhpXiUF5nvQoJg=="
     },
@@ -932,6 +936,7 @@
           "npm:@markslides/markdown-it-mermaid@~0.3.6",
           "npm:dayjs@^1.11.13",
           "npm:denque@^2.1.0",
+          "npm:es-toolkit@^1.43.0",
           "npm:highlight.js@^11.11.1",
           "npm:katex@~0.16.22",
           "npm:markdown-it-anchor@^9.2.0",

@@ -1,15 +1,18 @@
 import { beforeEach, describe, it } from "@std/testing/bdd";
 import { expect } from "@std/expect";
-import { DEFAULT_CONFIG } from "../../src/config.ts";
+import {
+  type Context,
+  DEFAULT_CONFIG,
+  DEFAULT_HOOKS,
+} from "../../src/context.ts";
 import { findSubdocs } from "../../src/markdown.ts";
-import type { Context } from "../../src/types.ts";
 
 describe("findSubdocs", () => {
   describe("with simpesys link style", () => {
     let config: Context;
 
     beforeEach(() => {
-      config = { ...DEFAULT_CONFIG, hooks: {} };
+      config = { config: { ...DEFAULT_CONFIG }, hooks: { ...DEFAULT_HOOKS } };
     });
 
     it("should find subdocuments in subdocs section", () => {
@@ -17,7 +20,7 @@ describe("findSubdocs", () => {
 
 Some content.
 
-## ${config.docs.subdocumentsSectionTitle}
+## ${config.config.docs.subdocumentsSectionTitle}
 
 - [[doc1]]
 - [[doc2]]{Document 2}
@@ -41,11 +44,11 @@ Some content without subpages.
     it("should handle publications section", () => {
       const markdown = `# Title
 
-## ${config.docs.subdocumentsSectionTitle}
+## ${config.config.docs.subdocumentsSectionTitle}
 
 - [[doc1]]
 
-### ${config.docs.publicationsSectionTitle}
+### ${config.config.docs.publicationsSectionTitle}
 
 - [[pub1]]
 - [[pub2]]
@@ -61,7 +64,7 @@ Some content without subpages.
     it("should work with asterisk list markers", () => {
       const markdown = `# Title
 
-## ${config.docs.subdocumentsSectionTitle}
+## ${config.config.docs.subdocumentsSectionTitle}
 
 * [[doc1]]
 * [[doc2]]
@@ -76,7 +79,7 @@ Some content without subpages.
     it("should stop at next h2 section", () => {
       const markdown = `# Title
 
-## ${config.docs.subdocumentsSectionTitle}
+## ${config.config.docs.subdocumentsSectionTitle}
 
 - [[doc1]]
 
@@ -92,11 +95,14 @@ Some content without subpages.
 
     it("should use custom section title from config", () => {
       const customConfig: Context = {
-        ...config,
-        docs: {
-          ...config.docs,
-          subdocumentsSectionTitle: "Children",
+        config: {
+          ...config.config,
+          docs: {
+            ...config.config.docs,
+            subdocumentsSectionTitle: "Children",
+          },
         },
+        hooks: { ...DEFAULT_HOOKS },
       };
       const markdown = `# Title
 
@@ -116,12 +122,14 @@ Some content without subpages.
 
     beforeEach(() => {
       config = {
-        ...DEFAULT_CONFIG,
-        docs: {
-          ...DEFAULT_CONFIG.docs,
-          linkStyle: "obsidian" as const,
+        config: {
+          ...DEFAULT_CONFIG,
+          docs: {
+            ...DEFAULT_CONFIG.docs,
+            linkStyle: "obsidian" as const,
+          },
         },
-        hooks: {},
+        hooks: { ...DEFAULT_HOOKS },
       };
     });
 
@@ -130,7 +138,7 @@ Some content without subpages.
 
 Some content.
 
-## ${config.docs.subdocumentsSectionTitle}
+## ${config.config.docs.subdocumentsSectionTitle}
 
 - [[doc1]]
 - [[doc2|Document 2]]
@@ -154,11 +162,11 @@ Some content without subpages.
     it("should handle publication section", () => {
       const markdown = `# Title
 
-## ${config.docs.subdocumentsSectionTitle}
+## ${config.config.docs.subdocumentsSectionTitle}
 
 - [[doc1]]
 
-### ${config.docs.publicationsSectionTitle} 
+### ${config.config.docs.publicationsSectionTitle}
 
 - [[pub1]]
 - [[pub2]]
@@ -174,7 +182,7 @@ Some content without subpages.
     it("should work with asterisk list markers", () => {
       const markdown = `# Title
 
-## ${config.docs.subdocumentsSectionTitle}
+## ${config.config.docs.subdocumentsSectionTitle}
 
 * [[doc1]]
 * [[doc2]]
@@ -189,7 +197,7 @@ Some content without subpages.
     it("should stop at next h2 section", () => {
       const markdown = `# Title
 
-## ${config.docs.subdocumentsSectionTitle}
+## ${config.config.docs.subdocumentsSectionTitle}
 
 - [[doc1]]
 

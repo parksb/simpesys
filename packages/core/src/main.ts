@@ -1,4 +1,5 @@
 import Denque from "denque";
+import { toMerged } from "es-toolkit";
 import {
   appendReferred,
   findReferences,
@@ -9,72 +10,62 @@ import {
   prependToc,
 } from "./markdown.ts";
 import type { Document, DocumentCandidate, DocumentDict } from "./document.ts";
-import { type Config, DEFAULT_CONFIG } from "./config.ts";
+import {
+  type Config,
+  type Context,
+  DEFAULT_CONFIG,
+  DEFAULT_HOOKS,
+} from "./context.ts";
 import type MarkdownIt from "markdown-it";
-import { getLinkRegex, type LinkReplacer } from "./link.ts";
+import { getLinkRegex } from "./link.ts";
 import {
   getFileMetadata,
   getFreshMetadata,
   loadMetadata,
   saveMetadata,
 } from "./metadata.ts";
-import type { Context, DeepPartial, Hooks } from "./types.ts";
+
+type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
 
 export class Simpesys {
   private markdownConverter: MarkdownIt;
 
   private documents: DocumentDict = {};
   private written: Set<string> = new Set([]);
-  private context: Context = { ...DEFAULT_CONFIG, hooks: {} };
 
-  private linkReplacer: LinkReplacer;
+  private context: Context = {
+    config: { ...DEFAULT_CONFIG },
+    hooks: { ...DEFAULT_HOOKS },
+  };
 
-  constructor(
-    config: DeepPartial<Config> = {},
-    hooks: Hooks = {},
-    linkReplacer?: LinkReplacer,
-  ) {
+  constructor({ config, hooks }: DeepPartial<Context>) {
     this.context = {
-      docs: {
-        ...DEFAULT_CONFIG.docs,
-        ...config.docs,
-      },
-      web: {
-        ...DEFAULT_CONFIG.web,
-        ...config.web,
-      },
-      project: {
-        ...DEFAULT_CONFIG.project,
-        ...config.project,
-      },
-      hooks: {
-        ...hooks,
-      },
+      config: toMerged(DEFAULT_CONFIG, config ?? {}),
+      hooks: toMerged(DEFAULT_HOOKS, hooks ?? {}),
     };
 
     this.markdownConverter = getMarkdownConverter(this.context);
-
-    this.linkReplacer = linkReplacer ?? {
-      normal: (key: string) => `<a href="/${key}">${key}</a>`,
-      labeled: (key: string, label: string) => `<a href="/${key}">${label}</a>`,
-    };
   }
 
   /**
    * Initialize the system by loading and processing documents.
    */
   async init(options: { syncMetadata?: boolean } = {}): Promise<Simpesys> {
+    const { config, hooks } = this.context;
+
     if (this.written.size > 0) {
       throw new Error("Simpesys has already been initialized.");
     }
 
-    this.written.add(this.context.docs.root);
+    this.written.add(config.docs.root);
 
     const rawMetadata = await loadMetadata(this.context);
 
     const queue = new Denque<DocumentCandidate>([
       {
-        filename: this.context.docs.root,
+        filename: config.docs.root,
         type: "subject",
         breadcrumbs: [],
       },
@@ -85,7 +76,7 @@ export class Simpesys {
       const { filename, type, breadcrumbs } = candidate;
 
       try {
-        const docPath = `${this.context.project.docs}/${filename}.md`;
+        const docPath = `${config.project.docs}/${filename}.md`;
 
         const metadata = await getFileMetadata(docPath);
         rawMetadata[filename] = getFreshMetadata(
@@ -95,9 +86,8 @@ export class Simpesys {
         );
 
         let markdown = await Deno.readTextFile(docPath);
-        markdown =
-          this.context.hooks?.manipulateMarkdown?.(markdown, candidate) ??
-            markdown;
+
+        markdown = hooks?.manipulateMarkdown?.(markdown, candidate) ?? markdown;
 
         const title = markdown.match(/^#\s.*/)![0].replace(/^#\s/, "");
 
@@ -171,16 +161,17 @@ export class Simpesys {
         this.documents,
       );
       document.markdown = prependToc(document.markdown);
-      document.html = this.markdownConverter
-        .render(document.markdown)
+      document.html = this.markdownConverter.render(document.markdown);
+
+      document.html = document.html
         .replace(
-          getLinkRegex(this.context.docs.linkStyle).labeled,
+          getLinkRegex(config.docs.linkStyle).labeled,
           (_: string, key: string, label: string) =>
-            this.linkReplacer.labeled(key, label),
+            hooks.renderInternalLink(key, label),
         )
         .replace(
-          getLinkRegex(this.context.docs.linkStyle).normal,
-          (_: string, key: string) => this.linkReplacer.normal(key),
+          getLinkRegex(config.docs.linkStyle).normal,
+          (_: string, key: string) => hooks.renderInternalLink(key),
         );
     }
 
@@ -205,6 +196,6 @@ export class Simpesys {
    * Get the applied configuration.
    */
   getConfig(): Config {
-    return this.context;
+    return this.context.config;
   }
 }
