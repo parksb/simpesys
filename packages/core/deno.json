@@ -36,7 +36,7 @@
     ]
   },
   "tasks": {
-    "test": "deno test --allow-env",
-    "test:coverage": "deno test --coverage=cov_profile --allow-env"
+    "test": "deno test --allow-env --allow-read --allow-write",
+    "test:coverage": "deno task test --coverage=cov_profile"
   }
 }

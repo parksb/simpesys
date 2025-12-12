@@ -11,28 +11,28 @@ describe("getFreshMetadata", () => {
   beforeEach(() => {
     existingMetadata = {
       "existing-doc": {
-        createdAt: createInstant("2024-01-01T00:00:00Z"),
-        updatedAt: createInstant("2024-06-01T00:00:00Z"),
+        createdAt: createInstant("2025-01-01T00:00:00Z"),
+        updatedAt: createInstant("2025-06-01T00:00:00Z"),
       },
     };
   });
 
   it("should use file timestamps for new document", () => {
     const docMetadata = {
-      createdAt: createInstant("2024-12-01T00:00:00Z"),
-      updatedAt: createInstant("2024-12-07T00:00:00Z"),
+      createdAt: createInstant("2025-12-01T00:00:00Z"),
+      updatedAt: createInstant("2025-12-07T00:00:00Z"),
     };
 
     const result = getFreshMetadata("new-doc", existingMetadata, docMetadata);
 
-    expect(result.createdAt.toString()).toBe("2024-12-01T00:00:00Z");
-    expect(result.updatedAt.toString()).toBe("2024-12-07T00:00:00Z");
+    expect(result.createdAt.toString()).toBe("2025-12-01T00:00:00Z");
+    expect(result.updatedAt.toString()).toBe("2025-12-07T00:00:00Z");
   });
 
   it("should keep existing createdAt for existing document", () => {
     const docMetadata = {
-      createdAt: createInstant("2024-12-01T00:00:00Z"),
-      updatedAt: createInstant("2024-12-07T00:00:00Z"),
+      createdAt: createInstant("2025-12-01T00:00:00Z"),
+      updatedAt: createInstant("2025-12-07T00:00:00Z"),
     };
 
     const result = getFreshMetadata(
@@ -41,13 +41,13 @@ describe("getFreshMetadata", () => {
       docMetadata,
     );
 
-    expect(result.createdAt.toString()).toBe("2024-01-01T00:00:00Z");
+    expect(result.createdAt.toString()).toBe("2025-01-01T00:00:00Z");
   });
 
   it("should update updatedAt when file mtime is newer", () => {
     const docMetadata = {
-      createdAt: createInstant("2024-12-01T00:00:00Z"),
-      updatedAt: createInstant("2024-12-07T00:00:00Z"),
+      createdAt: createInstant("2025-12-01T00:00:00Z"),
+      updatedAt: createInstant("2025-12-07T00:00:00Z"),
     };
 
     const result = getFreshMetadata(
@@ -56,13 +56,13 @@ describe("getFreshMetadata", () => {
       docMetadata,
     );
 
-    expect(result.updatedAt.toString()).toBe("2024-12-07T00:00:00Z");
+    expect(result.updatedAt.toString()).toBe("2025-12-07T00:00:00Z");
   });
 
   it("should keep existing updatedAt when file mtime is older", () => {
     const docMetadata = {
-      createdAt: createInstant("2024-01-01T00:00:00Z"),
-      updatedAt: createInstant("2024-03-01T00:00:00Z"),
+      createdAt: createInstant("2025-01-01T00:00:00Z"),
+      updatedAt: createInstant("2025-03-01T00:00:00Z"),
     };
 
     const result = getFreshMetadata(
@@ -71,6 +71,6 @@ describe("getFreshMetadata", () => {
       docMetadata,
     );
 
-    expect(result.updatedAt.toString()).toBe("2024-06-01T00:00:00Z");
+    expect(result.updatedAt.toString()).toBe("2025-06-01T00:00:00Z");
   });
 });
