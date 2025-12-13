@@ -52,7 +52,8 @@ export function getMarkdownConverter(context: Context) {
       macros: { "\\RR": "\\mathbb{R}" },
     })
     .use(mdTableOfContents, {
-      includeLevel: [2, 3, 4],
+      includeLevel: config.docs.toc.levels,
+      listType: config.docs.toc.listType,
       format: (content: string) => content.replace(/\[\^.*\]/, ""),
     })
     .use(mdCheckbox, {

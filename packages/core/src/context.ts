@@ -52,6 +52,24 @@ export interface Config {
      * The h2 title of the backlinks section. (default: "Backlinks")
      */
     backlinksSectionTitle: string;
+
+    /**
+     * Table of contents configuration.
+     */
+    toc: {
+      /**
+       * The list type for the table of contents. (default: "ul")
+       *
+       * - "ul": Unordered list (bullet points)
+       * - "ol": Ordered list (numbers)
+       */
+      listType: "ul" | "ol";
+
+      /**
+       * The heading levels to include in the table of contents. (default: [2, 3, 4])
+       */
+      levels: number[];
+    };
   };
 }
 
@@ -90,6 +108,10 @@ export const DEFAULT_CONFIG: Config = {
     subdocumentsSectionTitle: "Subpages",
     publicationsSectionTitle: "Publications",
     backlinksSectionTitle: "Backlinks",
+    toc: {
+      listType: "ul",
+      levels: [2, 3, 4],
+    },
   },
 };
 
