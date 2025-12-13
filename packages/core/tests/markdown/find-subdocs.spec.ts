@@ -99,7 +99,7 @@ Some content without subpages.
           ...config.config,
           docs: {
             ...config.config.docs,
-            subdocumentsSectionTitle: "Children",
+            subdocumentsSectionTitle: ["Children"],
           },
         },
         hooks: { ...DEFAULT_HOOKS },
@@ -113,6 +113,88 @@ Some content without subpages.
       const result = findSubdocs(customConfig, markdown, "subject");
       expect(result).toEqual([
         { filename: "doc1", type: "subject" },
+      ]);
+    });
+
+    it("should support multiple subdocuments section titles", () => {
+      const customConfig: Context = {
+        config: {
+          ...config.config,
+          docs: {
+            ...config.config.docs,
+            subdocumentsSectionTitle: ["Subpages", "하위문서"],
+          },
+        },
+        hooks: { ...DEFAULT_HOOKS },
+      };
+      const markdown = `# Title
+
+## 하위문서
+
+- [[doc1]]
+- [[doc2]]
+`;
+      const result = findSubdocs(customConfig, markdown, "subject");
+      expect(result).toEqual([
+        { filename: "doc1", type: "subject" },
+        { filename: "doc2", type: "subject" },
+      ]);
+    });
+
+    it("should collect subdocs from multiple section titles", () => {
+      const customConfig: Context = {
+        config: {
+          ...config.config,
+          docs: {
+            ...config.config.docs,
+            subdocumentsSectionTitle: ["Subpages", "하위문서"],
+          },
+        },
+        hooks: { ...DEFAULT_HOOKS },
+      };
+      const markdown = `# Title
+
+## Subpages
+
+- [[doc1]]
+
+## 하위문서
+
+- [[doc2]]
+`;
+      const result = findSubdocs(customConfig, markdown, "subject");
+      expect(result).toEqual([
+        { filename: "doc1", type: "subject" },
+        { filename: "doc2", type: "subject" },
+      ]);
+    });
+
+    it("should support multiple publications section titles", () => {
+      const customConfig: Context = {
+        config: {
+          ...config.config,
+          docs: {
+            ...config.config.docs,
+            subdocumentsSectionTitle: ["Subpages"],
+            publicationsSectionTitle: ["Publications", "문헌"],
+          },
+        },
+        hooks: { ...DEFAULT_HOOKS },
+      };
+      const markdown = `# Title
+
+## Subpages
+
+- [[doc1]]
+
+### 문헌
+
+- [[pub1]]
+`;
+      const result = findSubdocs(customConfig, markdown, "subject");
+      expect(result).toEqual([
+        { filename: "doc1", type: "subject" },
+        { filename: "pub1", type: "publication" },
       ]);
     });
   });

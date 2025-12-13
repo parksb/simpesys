@@ -183,32 +183,46 @@ export const findSubdocs = (
   currentPath?: string,
 ) => {
   const { config } = context;
-
-  const subdocs: { filename: string; type: Document["type"] }[] = [];
-  const subdocSection = new RegExp(
-    `##\\s${config.docs.subdocumentsSectionTitle}\\s*\\n+([\\s\\S]*?)(?=\\n##\\s|$)`,
-  ).exec(markdown);
-
-  if (!subdocSection) return subdocs;
-
   const regex = getLinkRegex(config.docs.linkStyle);
-  let isPublicationSeciton = false;
-  for (const line of subdocSection[1].trim().split("\n")) {
-    if (line.trim() === `### ${config.docs.publicationsSectionTitle}`) {
-      isPublicationSeciton = true;
-    }
 
-    const match = line.match(regex.listItem);
-    if (match) {
-      const { key } = resolveLink(match[2], config.docs.linkStyle, currentPath);
-      subdocs.push({
-        filename: key,
-        type: isPublicationSeciton ? "publication" : type,
-      });
-    }
-  }
+  const parseSection = (sectionContent: string) => {
+    const lines = sectionContent.trim().split("\n");
+    const pubIndex = lines.findIndex((line) =>
+      config.docs.publicationsSectionTitle.some((t) =>
+        line.trim() === `### ${t}`
+      )
+    );
 
-  return subdocs;
+    return lines
+      .map((line, i) => ({
+        line,
+        isPublication: pubIndex !== -1 && i > pubIndex,
+      }))
+      .map(({ line, isPublication }) => {
+        const match = line.match(regex.listItem);
+        if (!match) return null;
+
+        const { key } = resolveLink(
+          match[2],
+          config.docs.linkStyle,
+          currentPath,
+        );
+
+        return {
+          filename: key,
+          type: isPublication ? "publication" : type,
+        };
+      })
+      .filter((item) => item !== null);
+  };
+
+  return config.docs.subdocumentsSectionTitle.flatMap((title) => {
+    const section = new RegExp(
+      `##\\s${title}\\s*\\n+([\\s\\S]*?)(?=\\n##\\s|$)`,
+    ).exec(markdown)?.[1];
+
+    return section ? parseSection(section) : [];
+  });
 };
 
 /**
@@ -322,13 +336,15 @@ const withCodeBlocksPreserved = (
 ): string => {
   const codeBlocks: string[] = [];
 
-  const result = markdown.replace(/```[\s\S]*?```/g, (match) => {
-    codeBlocks.push(match);
-    return `__CODE_BLOCK_${codeBlocks.length - 1}__`;
-  }).replace(/`[^`]+`/g, (match) => {
-    codeBlocks.push(match);
-    return `__CODE_BLOCK_${codeBlocks.length - 1}__`;
-  });
+  const result = markdown
+    .replace(/```[\s\S]*?```/g, (match) => {
+      codeBlocks.push(match);
+      return `__CODE_BLOCK_${codeBlocks.length - 1}__`;
+    })
+    .replace(/`[^`]+`/g, (match) => {
+      codeBlocks.push(match);
+      return `__CODE_BLOCK_${codeBlocks.length - 1}__`;
+    });
 
   return transform(result).replace(/__CODE_BLOCK_(\d+)__/g, (_, index) => {
     return codeBlocks[parseInt(index)];

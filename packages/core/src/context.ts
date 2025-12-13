@@ -39,14 +39,14 @@ export interface Config {
     linkStyle: LinkStyle;
 
     /**
-     * The h2 title of the subdocuments section. (default: "Subpages")
+     * The h2 title of the subdocuments section. (default: ["Subpages"])
      */
-    subdocumentsSectionTitle: string;
+    subdocumentsSectionTitle: string[];
 
     /**
-     * The h3 title of the publications section. (default: "Publications")
+     * The h3 title of the publications section. (default: ["Publications"])
      */
-    publicationsSectionTitle: string;
+    publicationsSectionTitle: string[];
 
     /**
      * The h2 title of the backlinks section. (default: "Backlinks")
@@ -105,8 +105,8 @@ export const DEFAULT_CONFIG: Config = {
     root: "index",
     notFound: "404",
     linkStyle: "simpesys",
-    subdocumentsSectionTitle: "Subpages",
-    publicationsSectionTitle: "Publications",
+    subdocumentsSectionTitle: ["Subpages"],
+    publicationsSectionTitle: ["Publications"],
     backlinksSectionTitle: "Backlinks",
     toc: {
       listType: "ul",
