@@ -90,6 +90,50 @@ describe("labelInternalLinks", () => {
       const result = labelInternalLinks(config, markdown, dict);
       expect(result).toBe("Check out [[404]]{Some Label} for more info.");
     });
+
+    it("should not label links inside inline code", () => {
+      const markdown = "This is `[[doc1]]` in code, but [[doc2]] is real.";
+      const result = labelInternalLinks(config, markdown, dict);
+      expect(result).toBe(
+        "This is `[[doc1]]` in code, but [[doc2]]{Document 2} is real.",
+      );
+    });
+
+    it("should not label links inside fenced code blocks", () => {
+      const markdown = `See [[doc1]].
+
+\`\`\`
+[[doc2]]
+\`\`\`
+
+And [[doc2]].`;
+      const result = labelInternalLinks(config, markdown, dict);
+      expect(result).toBe(`See [[doc1]]{Document 1}.
+
+\`\`\`
+[[doc2]]
+\`\`\`
+
+And [[doc2]]{Document 2}.`);
+    });
+
+    it("should handle mixed inline code and code blocks", () => {
+      const markdown = `Check \`[[doc1]]\` and:
+
+\`\`\`js
+const x = "[[doc1]]";
+\`\`\`
+
+But [[doc1]] is valid.`;
+      const result = labelInternalLinks(config, markdown, dict);
+      expect(result).toBe(`Check \`[[doc1]]\` and:
+
+\`\`\`js
+const x = "[[doc1]]";
+\`\`\`
+
+But [[doc1]]{Document 1} is valid.`);
+    });
   });
 
   describe("with obsidian link style", () => {
@@ -144,6 +188,50 @@ describe("labelInternalLinks", () => {
       const markdown = "Check out [[nonexistent|Some Label]] for more info.";
       const result = labelInternalLinks(config, markdown, dict);
       expect(result).toBe("Check out [[404|Some Label]] for more info.");
+    });
+
+    it("should not label links inside inline code", () => {
+      const markdown = "This is `[[doc1]]` in code, but [[doc2]] is real.";
+      const result = labelInternalLinks(config, markdown, dict);
+      expect(result).toBe(
+        "This is `[[doc1]]` in code, but [[doc2|Document 2]] is real.",
+      );
+    });
+
+    it("should not label links inside fenced code blocks", () => {
+      const markdown = `See [[doc1]].
+
+\`\`\`
+[[doc2]]
+\`\`\`
+
+And [[doc2]].`;
+      const result = labelInternalLinks(config, markdown, dict);
+      expect(result).toBe(`See [[doc1|Document 1]].
+
+\`\`\`
+[[doc2]]
+\`\`\`
+
+And [[doc2|Document 2]].`);
+    });
+
+    it("should handle mixed inline code and code blocks", () => {
+      const markdown = `Check \`[[doc1]]\` and:
+
+\`\`\`js
+const x = "[[doc1]]";
+\`\`\`
+
+But [[doc1]] is valid.`;
+      const result = labelInternalLinks(config, markdown, dict);
+      expect(result).toBe(`Check \`[[doc1]]\` and:
+
+\`\`\`js
+const x = "[[doc1]]";
+\`\`\`
+
+But [[doc1|Document 1]] is valid.`);
     });
   });
 });

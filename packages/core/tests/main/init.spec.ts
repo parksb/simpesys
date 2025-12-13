@@ -111,4 +111,26 @@ describe("Simpesys init", () => {
     const referrers = page2?.referred.map((r) => r.document.filename);
     expect(referrers).toContain("page1");
   });
+
+  it("should not render links inside code blocks in HTML", async () => {
+    const docsPath = `${FIXTURES_DIR}/with-codeblocks`;
+
+    const simpesys = new Simpesys({
+      config: {
+        project: {
+          root: docsPath,
+          docs: docsPath,
+        },
+      },
+    });
+
+    await simpesys.init();
+
+    const index = simpesys.getDocument("index");
+
+    expect(index).toBeDefined();
+    expect(index?.html).toContain('<a href="/page1">');
+    expect(index?.html).toContain("<code>[[page1]]</code>");
+    expect(index?.html).toMatch(/<pre[^>]*>.*\[\[page1\]\].*<\/pre>/s);
+  });
 });

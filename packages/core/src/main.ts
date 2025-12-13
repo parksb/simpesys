@@ -8,6 +8,7 @@ import {
   getMarkdownConverter,
   labelInternalLinks,
   prependToc,
+  withHTMLCodePreserved,
 } from "./markdown.ts";
 import type { Document, DocumentCandidate, DocumentDict } from "./document.ts";
 import {
@@ -163,16 +164,17 @@ export class Simpesys {
       document.markdown = prependToc(document.markdown);
       document.html = this.markdownConverter.render(document.markdown);
 
-      document.html = document.html
-        .replace(
-          getLinkRegex(config.docs.linkStyle).labeled,
-          (_: string, key: string, label: string) =>
-            hooks.renderInternalLink(key, label),
-        )
-        .replace(
-          getLinkRegex(config.docs.linkStyle).normal,
-          (_: string, key: string) => hooks.renderInternalLink(key),
-        );
+      document.html = withHTMLCodePreserved(document.html, (html) =>
+        html
+          .replace(
+            getLinkRegex(config.docs.linkStyle).labeled,
+            (_: string, key: string, label: string) =>
+              hooks.renderInternalLink(key, label),
+          )
+          .replace(
+            getLinkRegex(config.docs.linkStyle).normal,
+            (_: string, key: string) => hooks.renderInternalLink(key),
+          ));
     }
 
     return this;

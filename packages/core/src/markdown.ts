@@ -222,37 +222,43 @@ export const labelInternalLinks = (
 
   const regex = getLinkRegex(config.docs.linkStyle);
 
-  return markdown.replace(regex.all, (match) => {
-    const { key, label } = parseLink(match, config.docs.linkStyle);
+  return withCodeBlocksPreserved(
+    markdown,
+    (text) =>
+      text.replace(regex.all, (match) => {
+        const { key, label } = parseLink(match, config.docs.linkStyle);
 
-    try {
-      if (!dict[key]) {
-        throw new Error(`Unresolved internal link: ${match} in ${parent}.md`);
-      }
+        try {
+          if (!dict[key]) {
+            throw new Error(
+              `Unresolved internal link: ${match} in ${parent}.md`,
+            );
+          }
 
-      if (label) return match;
+          if (label) return match;
 
-      return getLink(key, dict[key].title, config.docs.linkStyle);
-    } catch (e: unknown) {
-      if (e instanceof Error) {
-        hooks?.onInternalLinkUnresolved?.(e);
-      }
+          return getLink(key, dict[key].title, config.docs.linkStyle);
+        } catch (e: unknown) {
+          if (e instanceof Error) {
+            hooks?.onInternalLinkUnresolved?.(e);
+          }
 
-      if (label) {
-        return getLink(config.docs.notFound, label, config.docs.linkStyle);
-      }
+          if (label) {
+            return getLink(config.docs.notFound, label, config.docs.linkStyle);
+          }
 
-      if (key.startsWith("private/")) {
-        return getLink(
-          config.docs.notFound,
-          key.replace(/./g, "*"),
-          config.docs.linkStyle,
-        );
-      }
+          if (key.startsWith("private/")) {
+            return getLink(
+              config.docs.notFound,
+              key.replace(/./g, "*"),
+              config.docs.linkStyle,
+            );
+          }
 
-      return getLink(config.docs.notFound, key, config.docs.linkStyle);
-    }
-  });
+          return getLink(config.docs.notFound, key, config.docs.linkStyle);
+        }
+      }),
+  );
 };
 
 /**
@@ -265,7 +271,9 @@ export const findReferences = (context: Context, markdown: string) => {
   const extractKey = (link: string) =>
     parseLink(link, config.docs.linkStyle).key;
 
-  return Array.from(new Set(markdown.match(regex.all)?.map(extractKey) || []));
+  return Array.from(
+    new Set(stripCodeBlocks(markdown).match(regex.all)?.map(extractKey) || []),
+  );
 };
 
 /**
@@ -276,4 +284,52 @@ export const validate = (markdown: string) => {
     throw new Error("The document must start with a header.");
   }
   return true;
+};
+
+/**
+ * Apply a transformation function to HTML while preserving code tags.
+ */
+export const withHTMLCodePreserved = (
+  html: string,
+  transform: (text: string) => string,
+): string => {
+  const codeContents: string[] = [];
+
+  const result = html.replace(/<code[^>]*>[\s\S]*?<\/code>/g, (match) => {
+    codeContents.push(match);
+    return `__HTML_CODE_${codeContents.length - 1}__`;
+  });
+
+  return transform(result).replace(/__HTML_CODE_(\d+)__/g, (_, index) => {
+    return codeContents[parseInt(index)];
+  });
+};
+
+/**
+ * Apply a transformation function to markdown while preserving code blocks.
+ */
+const withCodeBlocksPreserved = (
+  markdown: string,
+  transform: (text: string) => string,
+): string => {
+  const codeBlocks: string[] = [];
+
+  const result = markdown.replace(/```[\s\S]*?```/g, (match) => {
+    codeBlocks.push(match);
+    return `__CODE_BLOCK_${codeBlocks.length - 1}__`;
+  }).replace(/`[^`]+`/g, (match) => {
+    codeBlocks.push(match);
+    return `__CODE_BLOCK_${codeBlocks.length - 1}__`;
+  });
+
+  return transform(result).replace(/__CODE_BLOCK_(\d+)__/g, (_, index) => {
+    return codeBlocks[parseInt(index)];
+  });
+};
+
+/**
+ * Removes fenced code blocks (```) and inline code (`) from the markdown.
+ */
+const stripCodeBlocks = (markdown: string): string => {
+  return markdown.replace(/```[\s\S]*?```/g, "").replace(/`[^`]+`/g, "");
 };
