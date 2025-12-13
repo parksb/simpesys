@@ -1,3 +1,5 @@
+import { dirname, join, normalize } from "@std/path/posix";
+
 export type LinkStyle = "simpesys" | "obsidian";
 
 export interface LinkRegexSet {
@@ -33,9 +35,9 @@ export interface LinkRegexSet {
 }
 
 /**
- * Result of parsing a link.
+ * Result of resolving a link.
  */
-export interface ParsedLink {
+export interface ResolvedLink {
   key: string;
   label: string | null;
 }
@@ -81,28 +83,45 @@ export function getLink(
   }
 }
 
-export function parseLink(
+export function resolveLink(
   link: string,
   style: LinkStyle,
-): ParsedLink {
+  currentPath?: string,
+): ResolvedLink {
   const stripped = link.replace(/(\[\[)|(\]\])/g, "");
 
   switch (style) {
     case "simpesys": {
-      const key = stripped.replace(/\{.+?\}$/, "");
+      const path = stripped.replace(/\{.+?\}$/, "");
       const labelMatch = link.match(/\]\]\{(.+)\}$/);
       return {
-        key,
+        key: resolveRelativePathToKey(path, currentPath),
         label: labelMatch ? labelMatch[1] : null,
       };
     }
     case "obsidian": {
-      const key = stripped.replace(/\|.+$/, "");
+      const path = stripped.replace(/\|.+$/, "");
       const labelMatch = link.match(/\|(.+)\]\]$/);
       return {
-        key,
+        key: resolveRelativePathToKey(path, currentPath),
         label: labelMatch ? labelMatch[1] : null,
       };
     }
   }
+}
+
+/**
+ * Resolve a relative path to key (root-based relative path).
+ */
+function resolveRelativePathToKey(path: string, currentPath?: string): string {
+  if (!currentPath) {
+    return path;
+  }
+
+  const resolvedPath = normalize(join(dirname(currentPath), path)).replace(
+    /^(\.\.\/)+/,
+    "",
+  );
+
+  return resolvedPath === "." ? "" : resolvedPath;
 }

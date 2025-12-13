@@ -15,7 +15,7 @@ import * as katex from "katex";
 
 import type { Document, DocumentDict, Reference } from "./document.ts";
 import type { Context } from "./context.ts";
-import { getLink, getLinkRegex, parseLink } from "./link.ts";
+import { getLink, getLinkRegex, resolveLink } from "./link.ts";
 
 /**
  * Create a MarkdownIt converter with predefined plugins and options.
@@ -180,6 +180,7 @@ export const findSubdocs = (
   context: Context,
   markdown: string,
   type: Document["type"],
+  currentPath?: string,
 ) => {
   const { config } = context;
 
@@ -199,9 +200,9 @@ export const findSubdocs = (
 
     const match = line.match(regex.listItem);
     if (match) {
-      const { key: filename } = parseLink(match[2], config.docs.linkStyle);
+      const { key } = resolveLink(match[2], config.docs.linkStyle, currentPath);
       subdocs.push({
-        filename,
+        filename: key,
         type: isPublicationSeciton ? "publication" : type,
       });
     }
@@ -227,7 +228,11 @@ export const labelInternalLinks = (
     markdown,
     (text) =>
       text.replace(regex.all, (match) => {
-        const { key, label } = parseLink(match, config.docs.linkStyle);
+        const { key, label } = resolveLink(
+          match,
+          config.docs.linkStyle,
+          parent,
+        );
 
         try {
           if (!dict[key]) {
@@ -236,7 +241,9 @@ export const labelInternalLinks = (
             );
           }
 
-          if (label) return match;
+          if (label) {
+            return getLink(key, label, config.docs.linkStyle);
+          }
 
           return getLink(key, dict[key].title, config.docs.linkStyle);
         } catch (e: unknown) {
@@ -270,7 +277,7 @@ export const findReferences = (context: Context, markdown: string) => {
 
   const regex = getLinkRegex(config.docs.linkStyle);
   const extractKey = (link: string) =>
-    parseLink(link, config.docs.linkStyle).key;
+    resolveLink(link, config.docs.linkStyle).key;
 
   return Array.from(
     new Set(stripCodeBlocks(markdown).match(regex.all)?.map(extractKey) || []),

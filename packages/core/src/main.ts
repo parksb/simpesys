@@ -107,7 +107,9 @@ export class Simpesys {
 
         this.documents[filename] = document;
 
-        for (const subdoc of findSubdocs(this.context, markdown, type)) {
+        for (
+          const subdoc of findSubdocs(this.context, markdown, type, filename)
+        ) {
           if (!this.written.has(subdoc.filename)) {
             queue.push({
               filename: subdoc.filename,
