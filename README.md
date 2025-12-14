@@ -26,7 +26,7 @@ my-garden/
     └── 404.md
 ```
 
-For detailed instructions on building a digital garden with Simpesys, see the [[getting-started]] document.
+For detailed instructions on building a digital garden with Simpesys, see the [Getting Started](https://pedia.simpesys.deno.net/getting-started) document.
 
 ## Design Principles
 
@@ -48,4 +48,4 @@ The module interfaces Simpesys provides to users should be narrow, and the depth
 
 ## License
 
-Simpesys is distributed under the GNU General Public License v3.0.
+Simpesys is distributed under the [GNU General Public License v3.0](LICENSE).
