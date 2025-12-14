@@ -2,7 +2,7 @@
 
 > https://pedia.simpesys.deno.net/
 
-Simpesys is a document build tool and system for constructing digital gardens based on Markdown documents.
+Simpesys is a Markdown file–based documentation build tool that also serves as a complete documentation system for digital gardens.
 
 Simpesys models the entire document system as a tree. However, since documents can cross-reference each other, the hierarchical model forms a tree while the reference model can become a connected directed graph with circuits. This structure allows Simpesys to maintain a simple overall document structure while managing complex reference relationships between documents. Upon initialization, Simpesys reads the designated root Markdown document. Starting from the root document, it parses internal link syntax within the content and repeatedly reads connected documents to build the complete document tree. Simpesys constructs this document tree and provides APIs for working with it.
 

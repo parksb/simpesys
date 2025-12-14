@@ -1,90 +1,116 @@
 {
   "404": {
     "createdAt": "2025-12-13T11:10:53.254Z",
-    "updatedAt": "2025-12-14T05:21:55.144Z"
+    "updatedAt": "2025-12-14T05:21:55.144Z",
+    "contentHash": "fba929d171cdf4487ee7e2637e9b89dc7e8eae9c"
   },
   "index": {
     "createdAt": "2025-12-12T15:55:29.107Z",
-    "updatedAt": "2025-12-14T06:02:30.052Z"
+    "updatedAt": "2025-12-14T15:57:00.944Z",
+    "contentHash": "978b4fbf6093e61d540f2af4674155e1ce49f18e",
+    "previousContentHash": "60cccf1c4f26c6539b970eb4bba758b3c58fa708",
+    "previousUpdatedAt": "2025-12-14T15:54:42.366Z"
   },
   "ko/index": {
     "createdAt": "2025-12-13T12:03:38.423Z",
-    "updatedAt": "2025-12-14T06:02:56.355Z"
+    "updatedAt": "2025-12-14T15:57:14.14Z",
+    "contentHash": "87d94a15a7bed82faa73eaa3d6ce244cd9d64156",
+    "previousContentHash": "7004ce48e8796e4fed235d7519bf54d291552dd1",
+    "previousUpdatedAt": "2025-12-14T15:54:35.88Z"
   },
   "ko/configuration": {
     "createdAt": "2025-12-13T11:15:12.316Z",
-    "updatedAt": "2025-12-14T05:39:40.414Z"
+    "updatedAt": "2025-12-14T05:39:40.414Z",
+    "contentHash": "40407cf696c3a5b592365c93a5c134bccc38d407"
   },
   "ko/architecture": {
     "createdAt": "2025-12-13T11:15:12.928Z",
-    "updatedAt": "2025-12-14T05:39:40.414Z"
+    "updatedAt": "2025-12-14T05:39:40.414Z",
+    "contentHash": "e47cc247df5d86f31acdc9ef719d9482fda2da6c"
   },
   "ko/features": {
     "createdAt": "2025-12-13T11:35:45.746Z",
-    "updatedAt": "2025-12-14T05:21:55.147Z"
+    "updatedAt": "2025-12-14T05:21:55.147Z",
+    "contentHash": "31996856ed4ebb3fc53c6643b41691e2ea92bb69"
   },
   "ko/features/internal-links": {
     "createdAt": "2025-12-13T11:16:37.138Z",
-    "updatedAt": "2025-12-14T05:39:40.415Z"
+    "updatedAt": "2025-12-14T05:39:40.415Z",
+    "contentHash": "581ae86df4a4e080c56a58bc56b36ca019526e2f"
   },
   "ko/features/backlinks": {
     "createdAt": "2025-12-13T11:16:38.911Z",
-    "updatedAt": "2025-12-14T05:39:40.414Z"
+    "updatedAt": "2025-12-14T05:39:40.414Z",
+    "contentHash": "2498dc7b50da583b86158015e6a810593631e5eb"
   },
   "ko/features/metadata": {
     "createdAt": "2025-12-13T11:16:39.506Z",
-    "updatedAt": "2025-12-14T05:39:40.415Z"
+    "updatedAt": "2025-12-14T05:39:40.415Z",
+    "contentHash": "d87f3cf103245b44e3b0c76a2e00dd9c2a713af8"
   },
   "ko/features/markdown": {
     "createdAt": "2025-12-13T11:18:16.606Z",
-    "updatedAt": "2025-12-14T05:39:40.415Z"
+    "updatedAt": "2025-12-14T05:39:40.415Z",
+    "contentHash": "d797cdb1b59e5ea13137cb40a76e98f2017f88e4"
   },
   "ko/getting-started": {
     "createdAt": "2025-12-13T15:17:11.518Z",
-    "updatedAt": "2025-12-14T05:39:40.416Z"
+    "updatedAt": "2025-12-14T05:39:40.416Z",
+    "contentHash": "190f2b5255e65b22ed31a449a01e73bfc64dfa19"
   },
   "ko/showcases": {
     "createdAt": "2025-12-14T03:30:09.58Z",
-    "updatedAt": "2025-12-14T05:21:55.149Z"
+    "updatedAt": "2025-12-14T05:21:55.149Z",
+    "contentHash": "3b88117dcc618bce6d927e5c3ca07a49b4a79108"
   },
   "getting-started": {
     "createdAt": "2025-12-14T04:12:23.217Z",
-    "updatedAt": "2025-12-14T05:39:40.413Z"
+    "updatedAt": "2025-12-14T05:39:40.413Z",
+    "contentHash": "27ecb07f8fdea513078794be4d0360e32bcfcd6d"
   },
   "architecture": {
     "createdAt": "2025-12-14T04:12:27.973Z",
-    "updatedAt": "2025-12-14T05:39:40.411Z"
+    "updatedAt": "2025-12-14T05:39:40.411Z",
+    "contentHash": "6217c6863700102da42f820334513d05b5ecfd7d"
   },
   "configuration": {
     "createdAt": "2025-12-14T04:13:42.343Z",
-    "updatedAt": "2025-12-14T05:39:40.411Z"
+    "updatedAt": "2025-12-14T05:39:40.411Z",
+    "contentHash": "03f375011eb85a3098da51d85944264165161ded"
   },
   "features": {
     "createdAt": "2025-12-14T04:13:44.706Z",
-    "updatedAt": "2025-12-14T05:21:55.145Z"
+    "updatedAt": "2025-12-14T05:21:55.145Z",
+    "contentHash": "a522cfa14080d1ced29a0b0b4ad8a695657bd90b"
   },
   "showcases": {
     "createdAt": "2025-12-14T04:13:47.607Z",
-    "updatedAt": "2025-12-14T05:21:55.149Z"
+    "updatedAt": "2025-12-14T05:21:55.149Z",
+    "contentHash": "083aaf64d0f9ee52ea93e9f354b306bff645f1c6"
   },
   "ko/404": {
     "createdAt": "2025-12-14T04:19:19.149Z",
-    "updatedAt": "2025-12-14T05:21:55.147Z"
+    "updatedAt": "2025-12-14T05:21:55.147Z",
+    "contentHash": "f7900777c7da088a44cd58f3552c5b1ed1aa15ed"
   },
   "features/internal-links": {
     "createdAt": "2025-12-14T04:14:53.873Z",
-    "updatedAt": "2025-12-14T05:39:40.412Z"
+    "updatedAt": "2025-12-14T05:39:40.412Z",
+    "contentHash": "12163159d26144d54c056b0b054db554bc8942cf"
   },
   "features/backlinks": {
     "createdAt": "2025-12-14T04:14:57.49Z",
-    "updatedAt": "2025-12-14T05:39:40.411Z"
+    "updatedAt": "2025-12-14T05:39:40.411Z",
+    "contentHash": "3d4393659aa5b5c2f959a5b5c844fa73131630ec"
   },
   "features/metadata": {
     "createdAt": "2025-12-14T04:15:05.057Z",
-    "updatedAt": "2025-12-14T05:39:40.412Z"
+    "updatedAt": "2025-12-14T05:39:40.412Z",
+    "contentHash": "534de953dc1d83917a9e19312ac9b42770bfb477"
   },
   "features/markdown": {
     "createdAt": "2025-12-14T04:15:01.878Z",
-    "updatedAt": "2025-12-14T05:39:40.412Z"
+    "updatedAt": "2025-12-14T05:39:40.412Z",
+    "contentHash": "ad1fbe022e4076c4aab9cde37bd653f6d3bebdff"
   }
 }
