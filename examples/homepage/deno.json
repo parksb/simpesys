@@ -1,0 +1,17 @@
+{
+  "name": "@simpesys/homepage",
+  "exports": "./mod.ts",
+  "imports": {
+    "@simpesys/core": "jsr:@simpesys/core",
+    "@hono/hono": "jsr:@hono/hono@^4",
+    "hono": "npm:hono@^4.10.8"
+  },
+  "compilerOptions": {
+    "jsx": "precompile",
+    "jsxImportSource": "hono/jsx"
+  },
+  "tasks": {
+    "start": "deno run -N -R -E -W app/main.tsx",
+    "dev": "deno run -N -R -E -W --watch=app/,docs/ app/main.tsx"
+  }
+}
