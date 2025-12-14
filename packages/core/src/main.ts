@@ -79,14 +79,14 @@ export class Simpesys {
       try {
         const docPath = `${config.project.docs}/${filename}.md`;
 
-        const metadata = await getFileMetadata(docPath);
+        let markdown = await Deno.readTextFile(docPath);
+
+        const metadata = await getFileMetadata(docPath, markdown);
         rawMetadata[filename] = getFreshMetadata(
           filename,
           rawMetadata,
           metadata,
         );
-
-        let markdown = await Deno.readTextFile(docPath);
 
         markdown = hooks?.manipulateMarkdown?.(markdown, candidate) ?? markdown;
 

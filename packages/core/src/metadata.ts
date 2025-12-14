@@ -1,6 +1,17 @@
 import * as path from "node:path";
+import { encodeHex } from "@std/encoding/hex";
 import type { Context } from "./context.ts";
 import { METADATA_FILENAME } from "./consts.ts";
+
+/**
+ * Compute SHA-1 hash of content for change detection.
+ * NOTE: This is NOT for security purposes.
+ */
+export async function computeContentHash(content: string): Promise<string> {
+  const data = new TextEncoder().encode(content);
+  const hashBuffer = await crypto.subtle.digest("SHA-1", data);
+  return encodeHex(new Uint8Array(hashBuffer));
+}
 
 /**
  * Document metadata.
@@ -8,6 +19,9 @@ import { METADATA_FILENAME } from "./consts.ts";
 export interface DocumentMetadata {
   createdAt: Temporal.Instant;
   updatedAt: Temporal.Instant;
+  contentHash: string;
+  previousContentHash?: string;
+  previousUpdatedAt?: Temporal.Instant;
 }
 
 /**
@@ -36,6 +50,11 @@ export async function loadMetadata(context: Context): Promise<Metadata> {
         updatedAt: value.updatedAt
           ? Temporal.Instant.from(value.updatedAt)
           : createdAt,
+        contentHash: value.contentHash ?? "",
+        previousContentHash: value.previousContentHash,
+        previousUpdatedAt: value.previousUpdatedAt
+          ? Temporal.Instant.from(value.previousUpdatedAt)
+          : undefined,
       };
     }
     return metadata;
@@ -60,11 +79,11 @@ export async function saveMetadata(
 }
 
 /**
- * Get file timestamps using Deno.stat().
- * Returns birthtime as createdAt and mtime as updatedAt.
+ * Get file metadata including birthtime and content hash.
  */
 export async function getFileMetadata(
   filePath: string,
+  content: string,
 ): Promise<DocumentMetadata> {
   const stat = await Deno.stat(filePath);
 
@@ -72,15 +91,13 @@ export async function getFileMetadata(
     ? Temporal.Instant.fromEpochMilliseconds(stat.birthtime.getTime())
     : Temporal.Now.instant();
 
-  const updatedAt = stat.mtime
-    ? Temporal.Instant.fromEpochMilliseconds(stat.mtime.getTime())
-    : createdAt;
+  const contentHash = await computeContentHash(content);
 
-  return { createdAt, updatedAt };
+  return { createdAt, updatedAt: createdAt, contentHash };
 }
 
 /**
- * Get fresh metadata for a document,
+ * Get fresh metadata for a document by comparing content hashes.
  */
 export function getFreshMetadata(
   filename: string,
@@ -92,15 +109,42 @@ export function getFreshMetadata(
   if (!existing) {
     return {
       createdAt: docMetadata.createdAt,
-      updatedAt: docMetadata.updatedAt,
+      updatedAt: Temporal.Now.instant(),
+      contentHash: docMetadata.contentHash,
     };
   }
 
-  const isNewer =
-    Temporal.Instant.compare(docMetadata.updatedAt, existing.updatedAt) > 0;
+  const currentHash = docMetadata.contentHash;
+
+  if (currentHash === existing.contentHash) {
+    return existing;
+  }
+
+  if (
+    currentHash === existing.previousContentHash && existing.previousUpdatedAt
+  ) {
+    return {
+      createdAt: existing.createdAt,
+      updatedAt: existing.previousUpdatedAt,
+      contentHash: currentHash,
+      previousContentHash: existing.contentHash,
+      previousUpdatedAt: existing.updatedAt,
+    };
+  }
+
+  if (!existing.contentHash) {
+    return {
+      createdAt: existing.createdAt,
+      updatedAt: existing.updatedAt,
+      contentHash: currentHash,
+    };
+  }
 
   return {
     createdAt: existing.createdAt,
-    updatedAt: isNewer ? docMetadata.updatedAt : existing.updatedAt,
+    updatedAt: Temporal.Now.instant(),
+    contentHash: currentHash,
+    previousContentHash: existing.contentHash,
+    previousUpdatedAt: existing.updatedAt,
   };
 }

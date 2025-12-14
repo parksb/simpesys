@@ -31,6 +31,7 @@ describe("saveMetadata", () => {
       "index": {
         createdAt: Temporal.Instant.from("2025-01-01T00:00:00Z"),
         updatedAt: Temporal.Instant.from("2025-06-01T00:00:00Z"),
+        contentHash: "dummy",
       },
     };
 
@@ -40,6 +41,7 @@ describe("saveMetadata", () => {
     expect(loaded["index"]).toBeDefined();
     expect(loaded["index"].createdAt.toString()).toBe("2025-01-01T00:00:00Z");
     expect(loaded["index"].updatedAt.toString()).toBe("2025-06-01T00:00:00Z");
+    expect(loaded["index"].contentHash).toBe("dummy");
   });
 
   it("should overwrite existing metadata file", async () => {
@@ -47,6 +49,7 @@ describe("saveMetadata", () => {
       "old": {
         createdAt: Temporal.Instant.from("2025-01-01T00:00:00Z"),
         updatedAt: Temporal.Instant.from("2025-01-01T00:00:00Z"),
+        contentHash: "oldhash",
       },
     };
 
@@ -56,6 +59,7 @@ describe("saveMetadata", () => {
       "new": {
         createdAt: Temporal.Instant.from("2025-12-01T00:00:00Z"),
         updatedAt: Temporal.Instant.from("2025-12-01T00:00:00Z"),
+        contentHash: "newhash",
       },
     };
 

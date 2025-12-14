@@ -1,10 +1,12 @@
 {
   "index": {
     "createdAt": "2025-01-01T00:00:00Z",
-    "updatedAt": "2025-06-01T00:00:00Z"
+    "updatedAt": "2025-06-01T00:00:00Z",
+    "contentHash": "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3"
   },
   "page1": {
     "createdAt": "2025-02-01T00:00:00Z",
-    "updatedAt": "2025-07-01T00:00:00Z"
+    "updatedAt": "2025-07-01T00:00:00Z",
+    "contentHash": "b94a8fe5ccb19ba61c4c0873d391e987982fbbd3"
   }
 }

@@ -13,44 +13,40 @@ describe("getFileMetadata", () => {
     await Deno.remove(tmpDir, { recursive: true });
   });
 
-  it("should return file timestamps", async () => {
+  it("should return file metadata with content hash", async () => {
     const filePath = `${tmpDir}/test.md`;
-    await Deno.writeTextFile(filePath, "# Test");
+    const content = "# Test";
+    await Deno.writeTextFile(filePath, content);
 
-    const metadata = await getFileMetadata(filePath);
+    const metadata = await getFileMetadata(filePath, content);
 
     expect(metadata.createdAt).toBeDefined();
     expect(metadata.updatedAt).toBeDefined();
+    expect(metadata.contentHash).toBeDefined();
     expect(metadata.createdAt instanceof Temporal.Instant).toBe(true);
     expect(metadata.updatedAt instanceof Temporal.Instant).toBe(true);
+    expect(typeof metadata.contentHash).toBe("string");
+    expect(metadata.contentHash.length).toBe(40); // SHA-1 hex length
   });
 
-  it("should have updatedAt >= createdAt", async () => {
+  it("should return same hash for same content", async () => {
+    const filePath = `${tmpDir}/test.md`;
+    const content = "# Test";
+    await Deno.writeTextFile(filePath, content);
+
+    const metadata1 = await getFileMetadata(filePath, content);
+    const metadata2 = await getFileMetadata(filePath, content);
+
+    expect(metadata1.contentHash).toBe(metadata2.contentHash);
+  });
+
+  it("should return different hash for different content", async () => {
     const filePath = `${tmpDir}/test.md`;
     await Deno.writeTextFile(filePath, "# Test");
 
-    const metadata = await getFileMetadata(filePath);
+    const metadata1 = await getFileMetadata(filePath, "# Test");
+    const metadata2 = await getFileMetadata(filePath, "# Test Modified");
 
-    const comparison = Temporal.Instant.compare(
-      metadata.updatedAt,
-      metadata.createdAt,
-    );
-    expect(comparison).toBeGreaterThanOrEqual(0);
-  });
-
-  it("should update updatedAt when file is modified", async () => {
-    const filePath = `${tmpDir}/test.md`;
-    await Deno.writeTextFile(filePath, "# Test");
-
-    const beforeModify = await getFileMetadata(filePath);
-    await Deno.writeTextFile(filePath, "# Test Modified");
-
-    const afterModify = await getFileMetadata(filePath);
-
-    const comparison = Temporal.Instant.compare(
-      afterModify.updatedAt,
-      beforeModify.updatedAt,
-    );
-    expect(comparison).toBeGreaterThanOrEqual(0);
+    expect(metadata1.contentHash).not.toBe(metadata2.contentHash);
   });
 });
