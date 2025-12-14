@@ -17,7 +17,7 @@ const simpesys = await new Simpesys({
       console.warn(`Unresolved internal link: ${error.message}`);
     },
   },
-}).init({ syncMetadata: true });
+}).init({ syncMetadata: Deno.env.get("ENV") !== "production" });
 
 const app = new Hono();
 const documents = simpesys.getDocuments();
