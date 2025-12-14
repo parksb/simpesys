@@ -8,7 +8,7 @@ Simpesys는 기본적으로 전체 문서 시스템을 트리로 모델링한다
 
 ## 시작하기
 
-Simpesys는 Deno 런타임을 위한 패키지를 제공한다.
+Simpesys는 [Deno](https://deno.com) 런타임을 위한 패키지를 제공한다.
 
 ```sh
 $ deno add jsr:@simpesys/core

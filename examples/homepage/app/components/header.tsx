@@ -56,7 +56,7 @@ export const Header: FC<HeaderProps> = ({ documents, currentKey }) => {
     <header class={styles.header}>
       <div class={styles.inner}>
         <div class={styles.logo}>
-          <a href={homeUrl}>Simpesys</a>
+          <a href={homeUrl}>🌿 Simpesys</a>
         </div>
         <nav class={styles.nav}>
           {navItems.map((item) => (

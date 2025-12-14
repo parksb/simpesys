@@ -8,7 +8,7 @@ The name "Simpesys" is a portmanteau of "[Simonpedia](https://pedia.parksb.xyz/)
 
 ## Getting Started
 
-Simpesys provides a package for the Deno runtime.
+Simpesys provides a package for the [Deno](https://deno.com) runtime.
 
 ```sh
 $ deno add jsr:@simpesys/core
