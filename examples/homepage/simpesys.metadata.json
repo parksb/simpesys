@@ -45,8 +45,10 @@
   },
   "ko/features/metadata": {
     "createdAt": "2025-12-13T11:16:39.506Z",
-    "updatedAt": "2025-12-14T05:39:40.415Z",
-    "contentHash": "d87f3cf103245b44e3b0c76a2e00dd9c2a713af8"
+    "updatedAt": "2025-12-25T14:33:24.666Z",
+    "contentHash": "4aaa1821e2eeafd67f552f87736740f15383ab11",
+    "previousContentHash": "d87f3cf103245b44e3b0c76a2e00dd9c2a713af8",
+    "previousUpdatedAt": "2025-12-14T05:39:40.415Z"
   },
   "ko/features/markdown": {
     "createdAt": "2025-12-13T11:18:16.606Z",
@@ -105,8 +107,10 @@
   },
   "features/metadata": {
     "createdAt": "2025-12-14T04:15:05.057Z",
-    "updatedAt": "2025-12-14T05:39:40.412Z",
-    "contentHash": "534de953dc1d83917a9e19312ac9b42770bfb477"
+    "updatedAt": "2025-12-25T14:35:34.465Z",
+    "contentHash": "22b47a532506c67d63fcd2e96facf539eb01c06e",
+    "previousContentHash": "534de953dc1d83917a9e19312ac9b42770bfb477",
+    "previousUpdatedAt": "2025-12-14T05:39:40.412Z"
   },
   "features/markdown": {
     "createdAt": "2025-12-14T04:15:01.878Z",

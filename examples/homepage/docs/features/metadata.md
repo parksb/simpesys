@@ -4,6 +4,9 @@ Simpesys tracks document creation and modification timestamps in a separate meta
 
 - `createdAt`: Timestamp when the document was first created.
 - `updatedAt`: Timestamp when the document was last modified.
+- `contentHash`: Hash of the document content.
+- `previousContentHash`: The `contentHash` value of the previous version.
+- `previousUpdatedAt`: The `updatedAt` value of the previous version.
 
 Metadata is stored in a JSON file at the project root and synchronized with filesystem timestamps during initialization.
 
@@ -14,16 +17,23 @@ Metadata is stored in `simpesys.metadata.json` at the project root:
 ```json
 {
   "index": {
-    "createdAt": "2025-01-15T10:30:00Z",
-    "updatedAt": "2025-02-20T14:45:00Z"
+    "createdAt": "2025-12-12T15:55:29.107Z",
+    "updatedAt": "2025-12-14T15:57:00.944Z",
+    "contentHash": "978b4fbf6093e61d540f2af4674155e1ce49f18e",
+    "previousContentHash": "60cccf1c4f26c6539b970eb4bba758b3c58fa708",
+    "previousUpdatedAt": "2025-12-14T15:54:42.366Z"
   },
-  "guide": {
+  "page1": {
     "createdAt": "2025-01-16T09:00:00Z",
-    "updatedAt": "2025-01-16T09:00:00Z"
+    "updatedAt": "2025-01-16T09:00:00Z",
+    "contentHash": "fba929d171cdf4487ee7e2637e9b89dc7e8eae9c"
   },
-  "features/toc": {
-    "createdAt": "2025-01-20T11:00:00Z",
-    "updatedAt": "2025-03-01T08:30:00Z"
+  "dir/page2": {
+    "createdAt": "2025-12-13T12:03:38.423Z",
+    "updatedAt": "2025-12-14T15:57:14.14Z",
+    "contentHash": "87d94a15a7bed82faa73eaa3d6ce244cd9d64156",
+    "previousContentHash": "7004ce48e8796e4fed235d7519bf54d291552dd1",
+    "previousUpdatedAt": "2025-12-14T15:54:35.88Z"
   }
 }
 ```
@@ -41,14 +51,7 @@ During initialization, Simpesys resolves timestamps from multiple sources.
 
 ### Synchronization Logic
 
-For each document, the following logic is performed:
-
-- If no existing metadata entry exists, use filesystem timestamps.
-- If existing metadata exists:
-  - `createdAt` preserves the existing value.
-  - `updatedAt` is updated only if the file's modification time is newer than the stored value.
-
-This approach ensures:
+If no existing metadata exists, filesystem timestamps are used. Otherwise, the `contentHash` is compared to determine whether the content has changed. If the content has changed, `updatedAt` is updated to the current time and the previous value is preserved. This approach ensures:
 
 - Creation timestamps remain stable across deployment environments.
 - Modification timestamps reflect actual file changes.

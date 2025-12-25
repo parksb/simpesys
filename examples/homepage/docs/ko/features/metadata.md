@@ -4,6 +4,9 @@ Simpesys는 문서의 생성 및 수정 타임스탬프를 별도의 메타데�
 
 - `createdAt`: 문서가 처음 생성된 타임스탬프.
 - `updatedAt`: 문서가 마지막으로 수정된 타임스탬프.
+- `contentHash`: 문서 내용의 해시값.
+- `previousContentHash`: 이전 버전의 `contentHash` 값.
+- `previousUpdatedAt`: 이전 버전의 `updatedAt` 값.
 
 메타데이터는 프로젝트 루트의 JSON 파일에 저장되고, 초기화 과정에서 파일 시스템 타임스탬프와 동기화된다.
 
@@ -14,16 +17,23 @@ Simpesys는 문서의 생성 및 수정 타임스탬프를 별도의 메타데�
 ```json
 {
   "index": {
-    "createdAt": "2025-01-15T10:30:00Z",
-    "updatedAt": "2025-02-20T14:45:00Z"
+    "createdAt": "2025-12-12T15:55:29.107Z",
+    "updatedAt": "2025-12-14T15:57:00.944Z",
+    "contentHash": "978b4fbf6093e61d540f2af4674155e1ce49f18e",
+    "previousContentHash": "60cccf1c4f26c6539b970eb4bba758b3c58fa708",
+    "previousUpdatedAt": "2025-12-14T15:54:42.366Z"
   },
-  "guide": {
+  "page1": {
     "createdAt": "2025-01-16T09:00:00Z",
-    "updatedAt": "2025-01-16T09:00:00Z"
+    "updatedAt": "2025-01-16T09:00:00Z",
+    "contentHash": "fba929d171cdf4487ee7e2637e9b89dc7e8eae9c"
   },
-  "features/toc": {
-    "createdAt": "2025-01-20T11:00:00Z",
-    "updatedAt": "2025-03-01T08:30:00Z"
+  "dir/page2": {
+    "createdAt": "2025-12-13T12:03:38.423Z",
+    "updatedAt": "2025-12-14T15:57:14.14Z",
+    "contentHash": "87d94a15a7bed82faa73eaa3d6ce244cd9d64156",
+    "previousContentHash": "7004ce48e8796e4fed235d7519bf54d291552dd1",
+    "previousUpdatedAt": "2025-12-14T15:54:35.88Z"
   }
 }
 ```
@@ -41,14 +51,7 @@ JSON 객체의 키는 문서 키에 해당한다. 타임스탬프는 ISO 8601 �
 
 ### 동기화 로직
 
-각 문서에 대해 다음과 같은 로직을 수행한다.
-
-- 기존 메타데이터 항목이 없으면 파일 시스템 타임스탬프를 사용한다.
-- 기존 메타데이터가 있으면:
-  - `createdAt`은 기존 값을 보존한다.
-  - `updatedAt`은 파일의 수정 시간이 저장된 값보다 새로운 경우에만 업데이트한다.
-
-이 접근 방식은 다음을 보장한다.
+기존 메타데이터가 없으면 파일 시스템 타임스탬프를 사용하고, 있으면 `contentHash`를 비교해 내용의 변경 여부를 판단한다. 내용이 변경되면 `updatedAt`을 현재 시각으로 업데이트하고 이전 값을 보존한다. 이 접근 방식은 다음을 보장한다.
 
 - 생성 타임스탬프가 배포 환경 간에 안정적으로 유지된다.
 - 수정 타임스탬프가 실제 파일 변경을 반영한다.
