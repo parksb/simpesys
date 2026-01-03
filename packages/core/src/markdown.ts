@@ -14,7 +14,7 @@ import { full as mdEmoji } from "markdown-it-emoji";
 import * as katex from "katex";
 
 import type { Document, DocumentDict, Reference } from "./document.ts";
-import type { Config } from "./context.ts";
+import type { Config } from "./config.ts";
 import { getLink, getLinkRegex, resolveLink } from "./link.ts";
 
 /**

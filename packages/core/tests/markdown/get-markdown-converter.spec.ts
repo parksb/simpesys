@@ -1,7 +1,7 @@
 import { describe, it } from "@std/testing/bdd";
 import { expect } from "@std/expect";
 import { getMarkdownConverter } from "../../src/markdown.ts";
-import { DEFAULT_CONFIG } from "../../src/context.ts";
+import { DEFAULT_CONFIG } from "../../src/config.ts";
 
 describe("getMarkdownConverter", () => {
   describe("toc.listType", () => {

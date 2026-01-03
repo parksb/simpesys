@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, it } from "@std/testing/bdd";
 import { expect } from "@std/expect";
 import { loadMetadata, saveMetadata } from "../../src/metadata.ts";
-import { type Config, DEFAULT_CONFIG } from "../../src/context.ts";
+import { type Config, DEFAULT_CONFIG } from "../../src/config.ts";
 
 describe("saveMetadata", () => {
   let tmpDir: string;

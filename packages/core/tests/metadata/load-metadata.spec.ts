@@ -1,7 +1,7 @@
 import { describe, it } from "@std/testing/bdd";
 import { expect } from "@std/expect";
 import { loadMetadata } from "../../src/metadata.ts";
-import { DEFAULT_CONFIG } from "../../src/context.ts";
+import { DEFAULT_CONFIG } from "../../src/config.ts";
 
 const FIXTURES_DIR = new URL("./fixtures", import.meta.url).pathname;
 

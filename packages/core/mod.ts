@@ -1,5 +1,4 @@
 export { Simpesys } from "./src/main.ts";
-export { defineConfig } from "./src/context.ts";
 export type {
   Breadcrumb,
   Document,
@@ -7,4 +6,4 @@ export type {
   DocumentDict,
   Reference,
 } from "./src/document.ts";
-export type { Config, Hooks } from "./src/context.ts";
+export { type Config, defineConfig, type Hooks } from "./src/config.ts";

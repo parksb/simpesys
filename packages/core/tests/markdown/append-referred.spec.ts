@@ -1,6 +1,6 @@
 import { beforeEach, describe, it } from "@std/testing/bdd";
 import { expect } from "@std/expect";
-import { type Config, DEFAULT_CONFIG } from "../../src/context.ts";
+import { type Config, DEFAULT_CONFIG } from "../../src/config.ts";
 import { appendReferred } from "../../src/markdown.ts";
 import type { Document, DocumentDict, Reference } from "../../src/document.ts";
 

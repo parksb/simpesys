@@ -1,6 +1,6 @@
 import * as path from "node:path";
 import { encodeHex } from "@std/encoding/hex";
-import type { Config } from "./context.ts";
+import type { Config } from "./config.ts";
 import { METADATA_FILENAME } from "./consts.ts";
 
 /**

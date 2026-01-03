@@ -1,7 +1,7 @@
 import { describe, it } from "@std/testing/bdd";
 import { expect } from "@std/expect";
 import { Simpesys } from "../../src/main.ts";
-import { DEFAULT_CONFIG } from "../../src/context.ts";
+import { DEFAULT_CONFIG } from "../../src/config.ts";
 
 describe("Simpesys constructor", () => {
   it("should use default config when no config provided", () => {

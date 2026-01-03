@@ -11,7 +11,7 @@ import {
   withHTMLCodePreserved,
 } from "./markdown.ts";
 import type { Document, DocumentCandidate, DocumentDict } from "./document.ts";
-import { type Config, type DeepPartial, DEFAULT_CONFIG } from "./context.ts";
+import { type Config, type DeepPartial, DEFAULT_CONFIG } from "./config.ts";
 import type MarkdownIt from "markdown-it";
 import { getLinkRegex } from "./link.ts";
 import {
