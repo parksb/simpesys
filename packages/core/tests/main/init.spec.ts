@@ -9,11 +9,9 @@ describe("Simpesys init", () => {
     const docsPath = `${FIXTURES_DIR}/basic`;
 
     const simpesys = new Simpesys({
-      config: {
-        project: {
-          root: docsPath,
-          docs: docsPath,
-        },
+      project: {
+        root: docsPath,
+        docs: docsPath,
       },
     });
 
@@ -29,11 +27,9 @@ describe("Simpesys init", () => {
     const docsPath = `${FIXTURES_DIR}/basic`;
 
     const simpesys = new Simpesys({
-      config: {
-        project: {
-          root: docsPath,
-          docs: docsPath,
-        },
+      project: {
+        root: docsPath,
+        docs: docsPath,
       },
     });
 
@@ -48,11 +44,9 @@ describe("Simpesys init", () => {
     const docsPath = `${FIXTURES_DIR}/with-subdocs`;
 
     const simpesys = new Simpesys({
-      config: {
-        project: {
-          root: docsPath,
-          docs: docsPath,
-        },
+      project: {
+        root: docsPath,
+        docs: docsPath,
       },
     });
 
@@ -69,11 +63,9 @@ describe("Simpesys init", () => {
     const docsPath = `${FIXTURES_DIR}/with-subdocs`;
 
     const simpesys = new Simpesys({
-      config: {
-        project: {
-          root: docsPath,
-          docs: docsPath,
-        },
+      project: {
+        root: docsPath,
+        docs: docsPath,
       },
     });
 
@@ -95,11 +87,9 @@ describe("Simpesys init", () => {
     const docsPath = `${FIXTURES_DIR}/with-backlinks`;
 
     const simpesys = new Simpesys({
-      config: {
-        project: {
-          root: docsPath,
-          docs: docsPath,
-        },
+      project: {
+        root: docsPath,
+        docs: docsPath,
       },
     });
 
@@ -116,11 +106,9 @@ describe("Simpesys init", () => {
     const docsPath = `${FIXTURES_DIR}/with-codeblocks`;
 
     const simpesys = new Simpesys({
-      config: {
-        project: {
-          root: docsPath,
-          docs: docsPath,
-        },
+      project: {
+        root: docsPath,
+        docs: docsPath,
       },
     });
 

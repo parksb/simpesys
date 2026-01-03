@@ -10,11 +10,9 @@ describe("Simpesys getters", () => {
       const docsPath = `${FIXTURES_DIR}/basic`;
 
       const simpesys = new Simpesys({
-        config: {
-          project: {
-            root: docsPath,
-            docs: docsPath,
-          },
+        project: {
+          root: docsPath,
+          docs: docsPath,
         },
       });
 
@@ -29,11 +27,9 @@ describe("Simpesys getters", () => {
       const docsPath = `${FIXTURES_DIR}/basic`;
 
       const simpesys = new Simpesys({
-        config: {
-          project: {
-            root: docsPath,
-            docs: docsPath,
-          },
+        project: {
+          root: docsPath,
+          docs: docsPath,
         },
       });
 
@@ -53,11 +49,9 @@ describe("Simpesys getters", () => {
       const docsPath = `${FIXTURES_DIR}/with-subdocs`;
 
       const simpesys = new Simpesys({
-        config: {
-          project: {
-            root: docsPath,
-            docs: docsPath,
-          },
+        project: {
+          root: docsPath,
+          docs: docsPath,
         },
       });
 
@@ -74,10 +68,8 @@ describe("Simpesys getters", () => {
   describe("getConfig", () => {
     it("should return the applied configuration", () => {
       const simpesys = new Simpesys({
-        config: {
-          web: {
-            domain: "https://example.com",
-          },
+        web: {
+          domain: "https://example.com",
         },
       });
 

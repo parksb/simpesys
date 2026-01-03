@@ -1,15 +1,13 @@
-import { Simpesys } from "@simpesys/core";
+import { defineConfig, Simpesys } from "@simpesys/core";
 import { type Context, Hono } from "@hono/hono";
 import { Layout } from "./components/layout.tsx";
 
-const simpesys = await new Simpesys({
-  config: {
-    docs: {
-      subdocumentsSectionTitle: ["Subpages", "하위문서"],
-      publicationsSectionTitle: ["Publications", "문헌"],
-      toc: {
-        listType: "ol",
-      },
+const config = defineConfig({
+  docs: {
+    subdocumentsSectionTitle: ["Subpages", "하위문서"],
+    publicationsSectionTitle: ["Publications", "문헌"],
+    toc: {
+      listType: "ol",
     },
   },
   hooks: {
@@ -17,7 +15,11 @@ const simpesys = await new Simpesys({
       console.warn(`Unresolved internal link: ${error.message}`);
     },
   },
-}).init({ syncMetadata: Deno.env.get("ENV") !== "production" });
+});
+
+const simpesys = await new Simpesys(config).init({
+  syncMetadata: Deno.env.get("ENV") !== "production",
+});
 
 const app = new Hono();
 const documents = simpesys.getDocuments();

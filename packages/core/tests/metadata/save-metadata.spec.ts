@@ -1,24 +1,20 @@
 import { afterEach, beforeEach, describe, it } from "@std/testing/bdd";
 import { expect } from "@std/expect";
 import { loadMetadata, saveMetadata } from "../../src/metadata.ts";
-import { DEFAULT_CONFIG, DEFAULT_HOOKS } from "../../src/context.ts";
-import type { Context } from "../../src/context.ts";
+import { type Config, DEFAULT_CONFIG } from "../../src/context.ts";
 
 describe("saveMetadata", () => {
   let tmpDir: string;
-  let context: Context;
+  let config: Config;
 
   beforeEach(async () => {
     tmpDir = await Deno.makeTempDir();
-    context = {
-      config: {
-        ...DEFAULT_CONFIG,
-        project: {
-          ...DEFAULT_CONFIG.project,
-          root: tmpDir,
-        },
+    config = {
+      ...DEFAULT_CONFIG,
+      project: {
+        ...DEFAULT_CONFIG.project,
+        root: tmpDir,
       },
-      hooks: { ...DEFAULT_HOOKS },
     };
   });
 
@@ -35,9 +31,9 @@ describe("saveMetadata", () => {
       },
     };
 
-    await saveMetadata(context, metadata);
+    await saveMetadata(config, metadata);
 
-    const loaded = await loadMetadata(context);
+    const loaded = await loadMetadata(config);
     expect(loaded["index"]).toBeDefined();
     expect(loaded["index"].createdAt.toString()).toBe("2025-01-01T00:00:00Z");
     expect(loaded["index"].updatedAt.toString()).toBe("2025-06-01T00:00:00Z");
@@ -53,7 +49,7 @@ describe("saveMetadata", () => {
       },
     };
 
-    await saveMetadata(context, initialMetadata);
+    await saveMetadata(config, initialMetadata);
 
     const newMetadata = {
       "new": {
@@ -63,9 +59,9 @@ describe("saveMetadata", () => {
       },
     };
 
-    await saveMetadata(context, newMetadata);
+    await saveMetadata(config, newMetadata);
 
-    const loaded = await loadMetadata(context);
+    const loaded = await loadMetadata(config);
     expect(loaded["old"]).toBeUndefined();
     expect(loaded["new"]).toBeDefined();
   });

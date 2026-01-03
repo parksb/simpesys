@@ -14,15 +14,13 @@ import { full as mdEmoji } from "markdown-it-emoji";
 import * as katex from "katex";
 
 import type { Document, DocumentDict, Reference } from "./document.ts";
-import type { Context } from "./context.ts";
+import type { Config } from "./context.ts";
 import { getLink, getLinkRegex, resolveLink } from "./link.ts";
 
 /**
  * Create a MarkdownIt converter with predefined plugins and options.
  */
-export function getMarkdownConverter(context: Context) {
-  const { config } = context;
-
+export function getMarkdownConverter(config: Config) {
   const md = MarkdownIt({
     html: true,
     xhtmlOut: false,
@@ -104,14 +102,12 @@ export const prependToc = (markdown: string) => {
  * Append the referred documents to the markdown.
  */
 export const appendReferred = (
-  context: Context,
+  config: Config,
   markdown: string,
   referred: Reference[],
   dict: DocumentDict,
 ) => {
   if (referred.length === 0) return markdown;
-
-  const { config } = context;
 
   const referredList = referred
     .map(
@@ -125,7 +121,7 @@ export const appendReferred = (
     .join("\n");
 
   return labelInternalLinks(
-    context,
+    config,
     `${markdown}\n\n## ${config.docs.backlinksSectionTitle}\n\n${referredList}`,
     dict,
   );
@@ -135,13 +131,11 @@ export const appendReferred = (
  * Find the sentences that refer to the word.
  */
 export const findReferredSentences = (
-  context: Context,
+  config: Config,
   markdown: string,
   word: string,
   dict: DocumentDict,
 ) => {
-  const { config } = context;
-
   const regex = getLinkRegex(config.docs.linkStyle);
   const linkPattern = regex.forKey(word);
   const labeledLinkPattern = regex.forKeyLabeled(word);
@@ -159,7 +153,7 @@ export const findReferredSentences = (
         linkPattern.lastIndex = 0;
         return linkPattern.test(sentence);
       })
-      .map((sentence) => labelInternalLinks(context, sentence, dict))
+      .map((sentence) => labelInternalLinks(config, sentence, dict))
       .map((sentence) => sentence.replace(labeledLinkPattern, "<b>$1</b>"))
       .filter(
         (sentence) =>
@@ -177,12 +171,11 @@ export const findReferredSentences = (
  * ```
  */
 export const findSubdocs = (
-  context: Context,
+  config: Config,
   markdown: string,
   type: Document["type"],
   currentPath?: string,
 ) => {
-  const { config } = context;
   const regex = getLinkRegex(config.docs.linkStyle);
 
   const parseSection = (sectionContent: string) => {
@@ -229,13 +222,11 @@ export const findSubdocs = (
  * Label the internal links in the markdown.
  */
 export const labelInternalLinks = (
-  context: Context,
+  config: Config,
   markdown: string,
   dict: DocumentDict,
   parent?: string,
 ) => {
-  const { config, hooks } = context;
-
   const regex = getLinkRegex(config.docs.linkStyle);
 
   return withCodeBlocksPreserved(
@@ -262,7 +253,7 @@ export const labelInternalLinks = (
           return getLink(key, dict[key].title, config.docs.linkStyle);
         } catch (e: unknown) {
           if (e instanceof Error) {
-            hooks?.onInternalLinkUnresolved?.(e);
+            config.hooks?.onInternalLinkUnresolved?.(e);
           }
 
           if (label) {
@@ -286,9 +277,7 @@ export const labelInternalLinks = (
 /**
  * Find the documents this markdown references.
  */
-export const findReferences = (context: Context, markdown: string) => {
-  const { config } = context;
-
+export const findReferences = (config: Config, markdown: string) => {
   const regex = getLinkRegex(config.docs.linkStyle);
   const extractKey = (link: string) =>
     resolveLink(link, config.docs.linkStyle).key;

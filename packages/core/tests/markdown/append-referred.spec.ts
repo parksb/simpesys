@@ -1,10 +1,6 @@
 import { beforeEach, describe, it } from "@std/testing/bdd";
 import { expect } from "@std/expect";
-import {
-  type Context,
-  DEFAULT_CONFIG,
-  DEFAULT_HOOKS,
-} from "../../src/context.ts";
+import { type Config, DEFAULT_CONFIG } from "../../src/context.ts";
 import { appendReferred } from "../../src/markdown.ts";
 import type { Document, DocumentDict, Reference } from "../../src/document.ts";
 
@@ -30,25 +26,25 @@ describe("appendReferred", () => {
   });
 
   describe("with simpesys link style", () => {
-    let context: Context;
+    let config: Config;
 
     beforeEach(() => {
-      context = { config: { ...DEFAULT_CONFIG }, hooks: { ...DEFAULT_HOOKS } };
+      config = { ...DEFAULT_CONFIG };
     });
 
     it("should return markdown unchanged when no references", () => {
       const markdown = "# Title\n\nSome content.";
       const referred: Reference[] = [];
-      const result = appendReferred(context, markdown, referred, dict);
+      const result = appendReferred(config, markdown, referred, dict);
       expect(result).toBe(markdown);
     });
 
     it("should append referred section with documents (simpesys)", () => {
       const markdown = "# Title\n\nSome content.";
       const referred: Reference[] = [{ document: dict["doc1"], sentences: [] }];
-      const result = appendReferred(context, markdown, referred, dict);
+      const result = appendReferred(config, markdown, referred, dict);
       expect(result).toContain(
-        `## ${context.config.docs.backlinksSectionTitle}`,
+        `## ${config.docs.backlinksSectionTitle}`,
       );
       expect(result).toContain("[[doc1]]{Document 1}");
     });
@@ -61,7 +57,7 @@ describe("appendReferred", () => {
           sentences: ["This is a reference sentence."],
         },
       ];
-      const result = appendReferred(context, markdown, referred, dict);
+      const result = appendReferred(config, markdown, referred, dict);
       expect(result).toContain("> This is a reference sentence.");
     });
 
@@ -71,7 +67,7 @@ describe("appendReferred", () => {
         { document: dict["doc1"], sentences: ["First reference."] },
         { document: dict["doc2"], sentences: ["Second reference."] },
       ];
-      const result = appendReferred(context, markdown, referred, dict);
+      const result = appendReferred(config, markdown, referred, dict);
       expect(result).toContain("[[doc1]]{Document 1}");
       expect(result).toContain("[[doc2]]{Document 2}");
       expect(result).toContain("> First reference.");
@@ -86,26 +82,21 @@ describe("appendReferred", () => {
           sentences: ["First sentence.", "Second sentence."],
         },
       ];
-      const result = appendReferred(context, markdown, referred, dict);
+      const result = appendReferred(config, markdown, referred, dict);
       expect(result).toContain("> First sentence.");
       expect(result).toContain("> Second sentence.");
     });
   });
 
   describe("with obsidian link style", () => {
-    let context: Context;
+    let config: Config;
 
     beforeEach(() => {
-      context = {
-        config: {
-          ...DEFAULT_CONFIG,
-          docs: {
-            ...DEFAULT_CONFIG.docs,
-            linkStyle: "obsidian" as const,
-          },
-        },
-        hooks: {
-          ...DEFAULT_HOOKS,
+      config = {
+        ...DEFAULT_CONFIG,
+        docs: {
+          ...DEFAULT_CONFIG.docs,
+          linkStyle: "obsidian" as const,
         },
       };
     });
@@ -113,16 +104,16 @@ describe("appendReferred", () => {
     it("should return markdown unchanged when no references", () => {
       const markdown = "# Title\n\nSome content.";
       const referred: Reference[] = [];
-      const result = appendReferred(context, markdown, referred, dict);
+      const result = appendReferred(config, markdown, referred, dict);
       expect(result).toBe(markdown);
     });
 
     it("should append referred section with documents (obsidian)", () => {
       const markdown = "# Title\n\nSome content.";
       const referred: Reference[] = [{ document: dict["doc1"], sentences: [] }];
-      const result = appendReferred(context, markdown, referred, dict);
+      const result = appendReferred(config, markdown, referred, dict);
       expect(result).toContain(
-        `## ${context.config.docs.backlinksSectionTitle}`,
+        `## ${config.docs.backlinksSectionTitle}`,
       );
       expect(result).toContain("[[doc1|Document 1]]");
     });
@@ -135,7 +126,7 @@ describe("appendReferred", () => {
           sentences: ["This is a reference sentence."],
         },
       ];
-      const result = appendReferred(context, markdown, referred, dict);
+      const result = appendReferred(config, markdown, referred, dict);
       expect(result).toContain("> This is a reference sentence.");
     });
 
@@ -145,7 +136,7 @@ describe("appendReferred", () => {
         { document: dict["doc1"], sentences: ["First reference."] },
         { document: dict["doc2"], sentences: ["Second reference."] },
       ];
-      const result = appendReferred(context, markdown, referred, dict);
+      const result = appendReferred(config, markdown, referred, dict);
       expect(result).toContain("[[doc1|Document 1]]");
       expect(result).toContain("[[doc2|Document 2]]");
       expect(result).toContain("> First reference.");
@@ -160,7 +151,7 @@ describe("appendReferred", () => {
           sentences: ["First sentence.", "Second sentence."],
         },
       ];
-      const result = appendReferred(context, markdown, referred, dict);
+      const result = appendReferred(config, markdown, referred, dict);
       expect(result).toContain("> First sentence.");
       expect(result).toContain("> Second sentence.");
     });

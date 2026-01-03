@@ -1,18 +1,14 @@
 import { beforeEach, describe, it } from "@std/testing/bdd";
 import { expect } from "@std/expect";
-import {
-  type Context,
-  DEFAULT_CONFIG,
-  DEFAULT_HOOKS,
-} from "../../src/context.ts";
+import { type Config, DEFAULT_CONFIG } from "../../src/context.ts";
 import { findSubdocs } from "../../src/markdown.ts";
 
 describe("findSubdocs", () => {
   describe("with simpesys link style", () => {
-    let config: Context;
+    let config: Config;
 
     beforeEach(() => {
-      config = { config: { ...DEFAULT_CONFIG }, hooks: { ...DEFAULT_HOOKS } };
+      config = { ...DEFAULT_CONFIG };
     });
 
     it("should find subdocuments in subdocs section", () => {
@@ -20,7 +16,7 @@ describe("findSubdocs", () => {
 
 Some content.
 
-## ${config.config.docs.subdocumentsSectionTitle}
+## ${config.docs.subdocumentsSectionTitle}
 
 - [[doc1]]
 - [[doc2]]{Document 2}
@@ -44,11 +40,11 @@ Some content without subpages.
     it("should handle publications section", () => {
       const markdown = `# Title
 
-## ${config.config.docs.subdocumentsSectionTitle}
+## ${config.docs.subdocumentsSectionTitle}
 
 - [[doc1]]
 
-### ${config.config.docs.publicationsSectionTitle}
+### ${config.docs.publicationsSectionTitle}
 
 - [[pub1]]
 - [[pub2]]
@@ -64,7 +60,7 @@ Some content without subpages.
     it("should work with asterisk list markers", () => {
       const markdown = `# Title
 
-## ${config.config.docs.subdocumentsSectionTitle}
+## ${config.docs.subdocumentsSectionTitle}
 
 * [[doc1]]
 * [[doc2]]
@@ -79,7 +75,7 @@ Some content without subpages.
     it("should stop at next h2 section", () => {
       const markdown = `# Title
 
-## ${config.config.docs.subdocumentsSectionTitle}
+## ${config.docs.subdocumentsSectionTitle}
 
 - [[doc1]]
 
@@ -94,15 +90,12 @@ Some content without subpages.
     });
 
     it("should use custom section title from config", () => {
-      const customConfig: Context = {
-        config: {
-          ...config.config,
-          docs: {
-            ...config.config.docs,
-            subdocumentsSectionTitle: ["Children"],
-          },
+      const customConfig: Config = {
+        ...config,
+        docs: {
+          ...config.docs,
+          subdocumentsSectionTitle: ["Children"],
         },
-        hooks: { ...DEFAULT_HOOKS },
       };
       const markdown = `# Title
 
@@ -117,15 +110,12 @@ Some content without subpages.
     });
 
     it("should support multiple subdocuments section titles", () => {
-      const customConfig: Context = {
-        config: {
-          ...config.config,
-          docs: {
-            ...config.config.docs,
-            subdocumentsSectionTitle: ["Subpages", "하위문서"],
-          },
+      const customConfig: Config = {
+        ...config,
+        docs: {
+          ...config.docs,
+          subdocumentsSectionTitle: ["Subpages", "하위문서"],
         },
-        hooks: { ...DEFAULT_HOOKS },
       };
       const markdown = `# Title
 
@@ -142,15 +132,12 @@ Some content without subpages.
     });
 
     it("should collect subdocs from multiple section titles", () => {
-      const customConfig: Context = {
-        config: {
-          ...config.config,
-          docs: {
-            ...config.config.docs,
-            subdocumentsSectionTitle: ["Subpages", "하위문서"],
-          },
+      const customConfig: Config = {
+        ...config,
+        docs: {
+          ...config.docs,
+          subdocumentsSectionTitle: ["Subpages", "하위문서"],
         },
-        hooks: { ...DEFAULT_HOOKS },
       };
       const markdown = `# Title
 
@@ -170,16 +157,13 @@ Some content without subpages.
     });
 
     it("should support multiple publications section titles", () => {
-      const customConfig: Context = {
-        config: {
-          ...config.config,
-          docs: {
-            ...config.config.docs,
-            subdocumentsSectionTitle: ["Subpages"],
-            publicationsSectionTitle: ["Publications", "문헌"],
-          },
+      const customConfig: Config = {
+        ...config,
+        docs: {
+          ...config.docs,
+          subdocumentsSectionTitle: ["Subpages"],
+          publicationsSectionTitle: ["Publications", "문헌"],
         },
-        hooks: { ...DEFAULT_HOOKS },
       };
       const markdown = `# Title
 
@@ -200,18 +184,15 @@ Some content without subpages.
   });
 
   describe("with obsidian link style", () => {
-    let config: Context;
+    let config: Config;
 
     beforeEach(() => {
       config = {
-        config: {
-          ...DEFAULT_CONFIG,
-          docs: {
-            ...DEFAULT_CONFIG.docs,
-            linkStyle: "obsidian" as const,
-          },
+        ...DEFAULT_CONFIG,
+        docs: {
+          ...DEFAULT_CONFIG.docs,
+          linkStyle: "obsidian" as const,
         },
-        hooks: { ...DEFAULT_HOOKS },
       };
     });
 
@@ -220,7 +201,7 @@ Some content without subpages.
 
 Some content.
 
-## ${config.config.docs.subdocumentsSectionTitle}
+## ${config.docs.subdocumentsSectionTitle}
 
 - [[doc1]]
 - [[doc2|Document 2]]
@@ -244,11 +225,11 @@ Some content without subpages.
     it("should handle publication section", () => {
       const markdown = `# Title
 
-## ${config.config.docs.subdocumentsSectionTitle}
+## ${config.docs.subdocumentsSectionTitle}
 
 - [[doc1]]
 
-### ${config.config.docs.publicationsSectionTitle}
+### ${config.docs.publicationsSectionTitle}
 
 - [[pub1]]
 - [[pub2]]
@@ -264,7 +245,7 @@ Some content without subpages.
     it("should work with asterisk list markers", () => {
       const markdown = `# Title
 
-## ${config.config.docs.subdocumentsSectionTitle}
+## ${config.docs.subdocumentsSectionTitle}
 
 * [[doc1]]
 * [[doc2]]
@@ -279,7 +260,7 @@ Some content without subpages.
     it("should stop at next h2 section", () => {
       const markdown = `# Title
 
-## ${config.config.docs.subdocumentsSectionTitle}
+## ${config.docs.subdocumentsSectionTitle}
 
 - [[doc1]]
 

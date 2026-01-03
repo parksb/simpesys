@@ -13,10 +13,8 @@ describe("Simpesys constructor", () => {
 
   it("should merge partial config with defaults", () => {
     const simpesys = new Simpesys({
-      config: {
-        docs: {
-          linkStyle: "obsidian",
-        },
+      docs: {
+        linkStyle: "obsidian",
       },
     });
     const config = simpesys.getConfig();
@@ -26,13 +24,11 @@ describe("Simpesys constructor", () => {
 
   it("should deep merge nested config", () => {
     const simpesys = new Simpesys({
-      config: {
-        web: {
-          domain: "https://example.com",
-        },
-        docs: {
-          backlinksSectionTitle: "References",
-        },
+      web: {
+        domain: "https://example.com",
+      },
+      docs: {
+        backlinksSectionTitle: "References",
       },
     });
     const config = simpesys.getConfig();

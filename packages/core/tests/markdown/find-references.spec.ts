@@ -1,18 +1,14 @@
 import { beforeEach, describe, it } from "@std/testing/bdd";
 import { expect } from "@std/expect";
-import {
-  type Context,
-  DEFAULT_CONFIG,
-  DEFAULT_HOOKS,
-} from "../../src/context.ts";
+import { type Config, DEFAULT_CONFIG } from "../../src/context.ts";
 import { findReferences } from "../../src/markdown.ts";
 
 describe("findReferences", () => {
   describe("with simpesys link style", () => {
-    let config: Context;
+    let config: Config;
 
     beforeEach(() => {
-      config = { config: { ...DEFAULT_CONFIG }, hooks: { ...DEFAULT_HOOKS } };
+      config = { ...DEFAULT_CONFIG };
     });
 
     it("should find all references in markdown", () => {
@@ -91,18 +87,15 @@ But [[real]] is valid.`;
   });
 
   describe("with obsidian link style", () => {
-    let config: Context;
+    let config: Config;
 
     beforeEach(() => {
       config = {
-        config: {
-          ...DEFAULT_CONFIG,
-          docs: {
-            ...DEFAULT_CONFIG.docs,
-            linkStyle: "obsidian" as const,
-          },
+        ...DEFAULT_CONFIG,
+        docs: {
+          ...DEFAULT_CONFIG.docs,
+          linkStyle: "obsidian" as const,
         },
-        hooks: { ...DEFAULT_HOOKS },
       };
     });
 

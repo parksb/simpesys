@@ -1,5 +1,30 @@
+import { toMerged } from "es-toolkit";
 import type { DocumentCandidate } from "./document.ts";
 import type { LinkStyle } from "./link.ts";
+
+export type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
+
+export interface Hooks {
+  /**
+   * A hook to manipulate the markdown content before processing.
+   */
+  manipulateMarkdown?: (
+    markdown: string,
+    candidate: DocumentCandidate,
+  ) => string;
+
+  /**
+   * A hook that is called when an internal link cannot be resolved.
+   */
+  onInternalLinkUnresolved?: (error: Error) => void;
+
+  /**
+   * A hook to replace labeled internal links in the markdown content.
+   */
+  renderInternalLink: (key: string, label?: string) => string;
+}
 
 export interface Config {
   web: {
@@ -71,26 +96,7 @@ export interface Config {
       levels: number[];
     };
   };
-}
-
-export interface Hooks {
-  /**
-   * A hook to manipulate the markdown content before processing.
-   */
-  manipulateMarkdown?: (
-    markdown: string,
-    candidate: DocumentCandidate,
-  ) => string;
-
-  /**
-   * A hook that is called when an internal link cannot be resolved.
-   */
-  onInternalLinkUnresolved?: (error: Error) => void;
-
-  /**
-   * A hook to replace labeled internal links in the markdown content.
-   */
-  renderInternalLink: (key: string, label?: string) => string;
+  hooks: Hooks;
 }
 
 export const DEFAULT_CONFIG: Config = {
@@ -113,10 +119,15 @@ export const DEFAULT_CONFIG: Config = {
       levels: [2, 3, 4],
     },
   },
+  hooks: {
+    renderInternalLink: (key, label) => `<a href="/${key}">${label ?? key}</a>`,
+  },
 };
 
-export const DEFAULT_HOOKS: Hooks = {
-  renderInternalLink: (key, label) => `<a href="/${key}">${label ?? key}</a>`,
-};
-
-export type Context = { config: Config; hooks: Hooks };
+/**
+ * Helper function to define a configuration with type safety.
+ * Merges the provided configuration with default values.
+ */
+export function defineConfig(config: DeepPartial<Config>): Config {
+  return toMerged(DEFAULT_CONFIG, config);
+}

@@ -1,6 +1,6 @@
 import * as path from "node:path";
 import { encodeHex } from "@std/encoding/hex";
-import type { Context } from "./context.ts";
+import type { Config } from "./context.ts";
 import { METADATA_FILENAME } from "./consts.ts";
 
 /**
@@ -32,10 +32,8 @@ export type Metadata = Record<string, DocumentMetadata>;
 /**
  * Load metadata from a JSON file.
  */
-export async function loadMetadata(context: Context): Promise<Metadata> {
+export async function loadMetadata(config: Config): Promise<Metadata> {
   try {
-    const { config } = context;
-
     const content = await Deno.readTextFile(
       path.join(config.project.root, METADATA_FILENAME),
     );
@@ -67,11 +65,9 @@ export async function loadMetadata(context: Context): Promise<Metadata> {
  * Save metadata to a JSON file.
  */
 export async function saveMetadata(
-  context: Context,
+  config: Config,
   metadata: Metadata,
 ): Promise<void> {
-  const { config } = context;
-
   await Deno.writeTextFile(
     path.join(config.project.root, METADATA_FILENAME),
     JSON.stringify(metadata, null, 2),

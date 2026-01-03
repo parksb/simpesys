@@ -1,10 +1,6 @@
 import { beforeEach, describe, it } from "@std/testing/bdd";
 import { expect } from "@std/expect";
-import {
-  type Context,
-  DEFAULT_CONFIG,
-  DEFAULT_HOOKS,
-} from "../../src/context.ts";
+import { type Config, DEFAULT_CONFIG } from "../../src/context.ts";
 import { labelInternalLinks } from "../../src/markdown.ts";
 import type { DocumentDict } from "../../src/document.ts";
 
@@ -47,10 +43,10 @@ describe("labelInternalLinks", () => {
   });
 
   describe("with simpesys link style", () => {
-    let config: Context;
+    let config: Config;
 
     beforeEach(() => {
-      config = { config: { ...DEFAULT_CONFIG }, hooks: { ...DEFAULT_HOOKS } };
+      config = { ...DEFAULT_CONFIG };
     });
 
     it("should add label to unlabeled links", () => {
@@ -137,18 +133,15 @@ But [[doc1]]{Document 1} is valid.`);
   });
 
   describe("with obsidian link style", () => {
-    let config: Context;
+    let config: Config;
 
     beforeEach(() => {
       config = {
-        config: {
-          ...DEFAULT_CONFIG,
-          docs: {
-            ...DEFAULT_CONFIG.docs,
-            linkStyle: "obsidian" as const,
-          },
+        ...DEFAULT_CONFIG,
+        docs: {
+          ...DEFAULT_CONFIG.docs,
+          linkStyle: "obsidian" as const,
         },
-        hooks: { ...DEFAULT_HOOKS },
       };
     });
 
