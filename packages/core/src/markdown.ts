@@ -29,7 +29,7 @@ export function getMarkdownConverter(config: Config) {
     linkify: true,
     typographer: true,
     quotes: "“”‘’",
-    highlight: (str: string, lang: string) => {
+    highlight: (str: string, lang: string): string => {
       if (lang && hljs.getLanguage(lang)) {
         return `<pre class="hljs"><code>${
           hljs.highlight(str, { language: lang }).value
