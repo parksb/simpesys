@@ -175,7 +175,7 @@ export const findSubdocs = (
   markdown: string,
   type: Document["type"],
   currentPath?: string,
-) => {
+): { filename: string; type: Document["type"] }[] => {
   const regex = getLinkRegex(config.docs.linkStyle);
 
   const parseSection = (sectionContent: string) => {
