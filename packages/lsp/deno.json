@@ -1,7 +1,13 @@
 {
   "name": "@simpesys/lsp",
   "version": "0.1.0",
+  "license": "GPL-3.0-or-later",
   "exports": "./src/main.ts",
+  "publish": {
+    "exclude": [
+      "tests/"
+    ]
+  },
   "imports": {
     "vscode-languageserver": "npm:vscode-languageserver@^9.0.1",
     "vscode-languageserver/node": "npm:vscode-languageserver@^9.0.1/lib/node/main.js",
