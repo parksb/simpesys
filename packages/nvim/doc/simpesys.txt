@@ -3,8 +3,8 @@
 SIMPESYS                                                          *simpesys*
 
 NeoVim plugin for the Simpesys digital garden system. Provides link
-navigation, backlink exploration, autocompletion, and diagnostics via
-an LSP server backed by @simpesys/core.
+navigation, autocompletion, and diagnostics via an LSP server backed
+by @simpesys/core.
 
 Requires NeoVim 0.11+. The LSP server is registered via
 `vim.lsp.config()` and `vim.lsp.enable()`, so standard LSP keymaps
@@ -21,31 +21,8 @@ looking for `simpesys.metadata.json` or `deno.json` referencing
   require("simpesys").setup({
     -- Optional: override LSP server command
     server_cmd = nil,
-    keymaps = {
-      backlinks = "<leader>sb",
-      tree = "<leader>st",
-      create_document = "<leader>sn",
-    },
   })
 <
-
-==============================================================================
-KEYMAPS                                                   *simpesys-keymaps*
-
-The plugin only registers keymaps for Simpesys-specific features.
-Standard LSP keymaps (`gd`, `gr`, `K`, etc.) are delegated to your
-global NeoVim LSP configuration.
-
-  `<leader>sb`    Open backlinks panel for the current document.
-  `<leader>st`    Open document tree panel.
-  `<leader>sn`    Create a new document from the link under the cursor.
-
-==============================================================================
-COMMANDS                                                 *simpesys-commands*
-
-  `:SimpesysBacklinks`        Open backlinks panel.
-  `:SimpesysTree`             Open document tree panel.
-  `:SimpesysCreateDocument`   Create document from the link under the cursor.
 
 ==============================================================================
 LINK STYLES                                           *simpesys-link-styles*

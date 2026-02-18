@@ -18,7 +18,7 @@ class LspClient {
     { resolve: (v: unknown) => void; reject: (e: Error) => void; id: number }
   > = [];
   private notifications: Array<{ method: string; params: unknown }> = [];
-  private readLoopRunning = false;
+  private loopPromise: Promise<void> | null = null;
 
   constructor(proc: Deno.ChildProcess) {
     this.proc = proc;
@@ -102,9 +102,8 @@ class LspClient {
   }
 
   start() {
-    if (!this.readLoopRunning) {
-      this.readLoopRunning = true;
-      this.processMessages().catch(() => {});
+    if (!this.loopPromise) {
+      this.loopPromise = this.processMessages().catch(() => {});
     }
   }
 
@@ -171,15 +170,18 @@ class LspClient {
     } catch {
       // Ignore
     }
-    try {
-      await this.proc.stderr.cancel();
-    } catch {
-      // Ignore
+    if (this.loopPromise) {
+      await this.loopPromise;
     }
     try {
       this.proc.kill("SIGTERM");
     } catch {
       // Already closed
+    }
+    try {
+      await this.proc.status;
+    } catch {
+      // Ignore
     }
   }
 }
@@ -207,7 +209,7 @@ describe(
         ],
         stdin: "piped",
         stdout: "piped",
-        stderr: "piped",
+        stderr: "null",
       }).spawn();
 
       client = new LspClient(proc);
@@ -215,9 +217,9 @@ describe(
 
       const result = await client.request("initialize", {
         processId: Deno.pid,
-        rootUri: "file://" + FIXTURES_DIR,
         capabilities: {},
         initializationOptions: {},
+        workspaceFolders: [{ uri: "file://" + FIXTURES_DIR, name: "test" }],
       }) as Record<string, unknown>;
 
       const caps = result.capabilities as Record<string, unknown>;

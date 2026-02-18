@@ -20,7 +20,7 @@
     "include": ["tests/**/*.spec.ts"]
   },
   "tasks": {
-    "start": "deno run --allow-env --allow-read --allow-write src/main.ts --stdio",
+    "start": "deno run --allow-env --allow-read --allow-write --allow-run src/main.ts --stdio",
     "test": "deno test --allow-env --allow-read --allow-write --allow-run"
   }
 }
