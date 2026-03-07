@@ -1,9 +1,11 @@
 {
   "name": "@simpesys/cli",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "GPL-3.0-or-later",
   "exports": "./src/main.ts",
-  "bin": "simpesys",
+  "bin": {
+    "simpesys": "./src/main.ts"
+  },
   "imports": {
     "@cliffy/command": "jsr:@cliffy/command@^1.0.0-rc.7",
     "@std/path": "jsr:@std/path@^1",
