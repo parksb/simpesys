@@ -243,7 +243,7 @@ export function createServer(connection: Connection) {
         label: key,
         labelDetails: { description: docEntry.title },
         filterText: key + " " + docEntry.title,
-        insertText: key + "]]",
+        insertText: key,
         kind: CompletionItemKind.Reference,
         sortText: String(i).padStart(5, "0"),
       };
