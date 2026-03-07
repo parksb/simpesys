@@ -1,4 +1,5 @@
 import { type App, createApp, Simpesys } from "@simpesys/core";
+import denoJson from "./deno.json" with { type: "json" };
 
 const simpesys = await new Simpesys().init();
 
@@ -26,7 +27,7 @@ export const app: App = createApp({
   manifest: {
     imports: {
       "@simpesys/core": "jsr:@simpesys/core@^0.5",
-      "@simpesys/app-bare": "jsr:@simpesys/app-bare@^0.1.0",
+      "@simpesys/app-bare": `jsr:@simpesys/app-bare@^${denoJson.version}`,
     },
   },
 });
