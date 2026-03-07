@@ -1,0 +1,15 @@
+{
+  "name": "@simpesys/app-wiki",
+  "version": "0.1.0",
+  "license": "GPL-3.0-or-later",
+  "exports": "./mod.ts",
+  "imports": {
+    "@simpesys/core": "jsr:@simpesys/core@^0.5",
+    "@hono/hono": "jsr:@hono/hono@^4",
+    "hono": "npm:hono@^4"
+  },
+  "compilerOptions": {
+    "jsx": "precompile",
+    "jsxImportSource": "hono/jsx"
+  }
+}

@@ -31,6 +31,7 @@
     "npm:es-toolkit@1": "1.43.0",
     "npm:es-toolkit@^1.43.0": "1.43.0",
     "npm:highlight.js@^11.11.1": "11.11.1",
+    "npm:hono@4": "4.10.8",
     "npm:hono@^4.10.8": "4.10.8",
     "npm:katex@~0.16.22": "0.16.22",
     "npm:markdown-it-anchor@^9.2.0": "9.2.0_@types+markdown-it@14.1.2_markdown-it@14.1.0",
@@ -1002,6 +1003,13 @@
       "packages/app-bare": {
         "dependencies": [
           "jsr:@simpesys/core@0.5"
+        ]
+      },
+      "packages/app-wiki": {
+        "dependencies": [
+          "jsr:@hono/hono@4",
+          "jsr:@simpesys/core@0.5",
+          "npm:hono@4"
         ]
       },
       "packages/cli": {
