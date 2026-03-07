@@ -3,7 +3,13 @@
   "version": "0.1.0",
   "license": "GPL-3.0-or-later",
   "exports": "./src/main.ts",
+  "imports": {
+    "@cliffy/command": "jsr:@cliffy/command@^1.0.0-rc.7",
+    "@std/path": "jsr:@std/path@^1",
+    "@std/fs": "jsr:@std/fs@^1",
+    "es-toolkit": "npm:es-toolkit@^1"
+  },
   "tasks": {
-    "start": "deno run src/main.ts"
+    "start": "deno run -A src/main.ts"
   }
 }
