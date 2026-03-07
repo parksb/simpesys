@@ -14,7 +14,7 @@ export default (req: Request): Response => {
 };
 
 const readDoc = (name: string) =>
-  Deno.readTextFile(new URL(`./docs/${name}`, import.meta.url));
+  fetch(new URL(`./docs/${name}`, import.meta.url)).then((r) => r.text());
 
 export const app: App = createApp({
   simpesys,
