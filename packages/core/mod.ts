@@ -14,3 +14,4 @@ export {
 } from "./src/config.ts";
 export { getLinkRegex, type LinkStyle, resolveLink } from "./src/link.ts";
 export { findSubdocs } from "./src/markdown.ts";
+export { type App, createApp } from "./src/app.ts";
