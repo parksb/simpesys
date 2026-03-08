@@ -79,15 +79,14 @@ export const initCommand = new Command()
 
     logger.success("Created deno.json");
 
-    const appExportSpecifier = isLocal ? pkgName : specifier;
     await Deno.writeTextFile(
       join(projectDir, "app", app.entry),
-      `import { app } from "${appExportSpecifier}";\nDeno.serve(app.handler);\n`,
+      `import { app } from "${pkgName}";\nDeno.serve(app.handler);\n`,
     );
 
     logger.success(`Created app/${app.entry}`);
     logger.success(`Project '${name}' initialized`);
-    logger.success(`Run 'cd ${name} && simpesys serve' to start the server`);
+    logger.success(`Run 'cd ${name} && deno task start' to start the server`);
   });
 
 async function getAppPackageName(
