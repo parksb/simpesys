@@ -67,14 +67,15 @@ export const initCommand = new Command()
 
     await Deno.writeTextFile(
       join(projectDir, "deno.json"),
-      JSON.stringify({ imports }, null, 2) + "\n",
+      JSON.stringify({ imports, unstable: ["temporal"] }, null, 2) + "\n",
     );
 
     logger.success("Created deno.json");
 
+    const appExportSpecifier = isLocal ? pkgName : specifier;
     await Deno.writeTextFile(
       join(projectDir, "app", "main.tsx"),
-      `export { default } from "${pkgName}";\n`,
+      `export { default } from "${appExportSpecifier}";\n`,
     );
 
     logger.success("Created app/main.tsx");
