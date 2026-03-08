@@ -1,7 +1,5 @@
-# Welcome
-
-This is your Simpesys documentation site.
+# Index
 
 ## Subpages
 
-- [[getting-started]]
+- [[404]]
