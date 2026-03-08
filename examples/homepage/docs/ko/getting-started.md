@@ -6,9 +6,31 @@
 
 Simpesys는 [Deno](https://deno.com) 런타임 버전 2.0 이상을 필요로 한다. 패키지는 [JSR](https://jsr.io) (JavaScript Registry)을 통해 배포된다.
 
-## 프로젝트 초기화
+## 빠른 시작
 
-디지털 정원을 구축하기 위한 Deno 프로젝트를 구성하는 것으로 시작한다. 여기서 프로젝트의 이름을 예시로 `my-garden`을 사용한다. 다음 명령어를 실행하면 `my-garden` 디렉토리가 생성되고 Deno 프로젝트가 구성된다.
+Simpesys는 자동으로 디지털 정원을 구축해주는 CLI 도구 `@simpesys/cli`를 제공한다.
+
+```sh
+$ deno run -R -W -E jsr:@simpesys/cli init my-garden
+$ cd my-garden
+$ deno task start
+```
+
+위 명령을 실행하면 브라우저에서 디지털 정원을 확인할 수 있다.
+
+![스캐폴딩된 디지털 정원의 첫 화면.](/images/app-wiki.webp)
+
+Simpesys는 문서 시스템이므로 애플리케이션 레이어와는 구분된다. 디지털 정원 방문자에게 문서를 어떻게 제공할지, 테마와 스타일은 어떻게 설정할지 정의하는 것은 애플리케이션의 몫이다. 원한다면 누구나 애플리케이션 구현체를 만들어 배포할 수 있다.
+
+특정 애플리케이션을 사용하려면 CLI 도구의 `--app` 플래그를 전달하면 된다. 기본 애플리케이션은 `jsr:@simpesys/app-wiki`이다.
+
+```sh
+$ deno run -R -W -E jsr:@simpesys/cli --app jsr:@simpesys/app-bare init my-garden
+```
+
+## 수동 초기화
+
+Simpesys가 제공하는 도구를 사용하는 대신, 직접 프로젝트를 스캐폴딩할 수도 있다. 다음 명령어를 실행하면 `my-garden` 디렉토리가 생성되고 Deno 프로젝트가 구성된다.
 
 ```sh
 $ deno init my-garden
@@ -36,7 +58,7 @@ $ touch app/main.ts docs/index.md docs/404.md
 
 문서를 보관하는 경로는 기본적으로 `docs` 디렉토리이지만, `config.project.docs` 옵션으로 설정할 수도 있다.
 
-## 패키지 설치
+### 패키지 설치
 
 `my-garden` 디렉토리 안에서 `deno add` 명령어로 프로젝트에 `@simpesys/core` 패키지를 추가한다.
 
@@ -54,7 +76,7 @@ $ deno add jsr:@simpesys/core
 }
 ```
 
-## 문서 작성
+### 문서 작성
 
 모든 마크다운 문서는 제목으로 시작해야 한다. 마크다운 문법상 레벨 1 헤딩(heading)이 문서 제목이 된다. 선호하는 편집기를 이용해 `docs` 디렉토리 안에 있는 `index.md` 문서를 다음과 같이 작성한다.
 
@@ -74,7 +96,7 @@ $ deno add jsr:@simpesys/core
 # Not Found
 ```
 
-## 애플리케이션 구현
+### 애플리케이션 구현
 
 `app` 디렉토리 안에 있는 `main.ts` 파일에 Simpesys를 초기화하고, 문서를 빌드하는 애플리케이션을 구현한다. 다음은 최소 사용 예시로, `index.md` 문서 정보를 콘솔에 출력한다.
 
@@ -89,7 +111,7 @@ console.log(document);
 
 `Simpesys` 생성자는 설정 객체를 받는다. `init()` 메서드는 모든 문서를 로드하고 빌드한다. `syncMetadata` 옵션을 `true`로 설정하면 빌드 과정에서 문서에 대한 메타데이터 파일을 생성하고, 업데이트한다.
 
-## 실행
+### 실행
 
 애플리케이션을 실행하려면 다음과 같은 Deno 권한이 필요하다.
 
@@ -149,3 +171,9 @@ Deno.serve(app.fetch);
 $ deno run -R -W -E -N app/main.ts
 Listening on http://0.0.0.0:8000/ (http://localhost:8000/)
 ```
+
+## 에디터 통합
+
+Simpesys는 문서 링크 자동완성, 문서 제목 미리보기 등 에디터에서의 디지털 정원 편집을 위한 LSP 서버 구현을 제공한다.
+
+- NeoVim: [simpesys.nvim](https://github.com/parksb/simpesys.nvim)

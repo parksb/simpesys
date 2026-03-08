@@ -10,23 +10,17 @@ The name "Simpesys" is a portmanteau of "[Simonpedia](https://github.com/parksb/
 
 ## Getting Started
 
-Simpesys provides a package for the Deno runtime.
+You can quickly scaffold a digital garden using Simpesys CLI tool.
 
 ```sh
-$ deno add jsr:@simpesys/core
+$ deno run -R -W -E jsr:@simpesys/cli init my-garden
+$ cd my-garden
+$ deno task start
 ```
 
-A Simpesys project has the following directory structure:
+After running these commands, you can check out your digital garden in the browser.
 
-```
-my-garden/
-├── deno.json
-├── app/
-│   └── main.ts
-└── docs/
-    ├── index.md
-    └── 404.md
-```
+![The landing page of the scaffolded digital garden.](examples/homepage/images/app-wiki.webp)
 
 For detailed instructions on building a digital garden with Simpesys, see the [Getting Started](https://pedia.simpesys.deno.net/getting-started) document.
 

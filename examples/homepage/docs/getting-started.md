@@ -6,9 +6,31 @@ This document explains how to build a digital garden using Simpesys.
 
 Simpesys requires [Deno](https://deno.com) runtime version 2.0 or higher. The package is distributed through [JSR](https://jsr.io) (JavaScript Registry).
 
-## Project Initialization
+## Quick Start
 
-Start by setting up a Deno project for building a digital garden. This example uses `my-garden` as the project name. Running the following command creates a `my-garden` directory and configures the Deno project:
+Simpesys offers a CLI tool, `@simpesys/cli`, to automatically scaffold a digital garden.
+
+```sh
+$ deno run -R -W -E jsr:@simpesys/cli init my-garden
+$ cd my-garden
+$ deno task start
+```
+
+After running these commands, you can check out your digital garden in the browser.
+
+![The landing page of the scaffolded digital garden.](/images/app-wiki.webp)
+
+Since Simpesys is a documentation system, it stays decoupled from the application layer. The application handles how documents are served and how themes or styles are applied. Anyone is free to build and distribute their own application implementations.
+
+To use a specific application, pass the `--app` flag to the CLI tool. The default application is `jsr:@simpesys/app-wiki`.
+
+```sh
+$ deno run -R -W -E jsr:@simpesys/cli --app jsr:@simpesys/app-bare init my-garden
+```
+
+## Manual Setup
+
+If you prefer not to use the CLI tool, you can scaffold the project manually. Run the following command to create a `my-garden` directory and initialize a Deno project:
 
 ```sh
 $ deno init my-garden
@@ -36,7 +58,7 @@ $ touch app/main.ts docs/index.md docs/404.md
 
 The document storage path defaults to the `docs` directory but can be configured using the `config.project.docs` option.
 
-## Package Installation
+### Package Installation
 
 Inside the `my-garden` directory, use the `deno add` command to add the `@simpesys/core` package to the project:
 
@@ -54,14 +76,14 @@ This command adds an import mapping to `deno.json`:
 }
 ```
 
-## Writing Documents
+### Writing Documents
 
 All Markdown documents must begin with a title. The level 1 heading in Markdown syntax becomes the document title. Using your preferred editor, create the `index.md` document in the `docs` directory as follows:
 
 ```markdown
 # Index
 
-## Subpages
+### Subpages
 
 - [[404]]
 ```
@@ -74,7 +96,7 @@ Next, create the `404.md` document:
 # Not Found
 ```
 
-## Application Implementation
+### Application Implementation
 
 In the `main.ts` file inside the `app` directory, implement an application that initializes Simpesys and builds documents. The following minimal example outputs information about the `index.md` document to the console:
 
@@ -89,7 +111,7 @@ console.log(document);
 
 The `Simpesys` constructor accepts a configuration object. The `init()` method loads and builds all documents. Setting the `syncMetadata` option to `true` generates and updates a metadata file for documents during the build process.
 
-## Execution
+### Execution
 
 Running the application requires the following Deno permissions:
 
@@ -149,3 +171,9 @@ Run the above application with the following command to start a local server:
 $ deno run -R -W -E -N app/main.ts
 Listening on http://0.0.0.0:8000/ (http://localhost:8000/)
 ```
+
+## Editor Integration
+
+Simpesys provides an LSP server implementation to enhance the editing experience with features like link autocompletion and document title previews.
+
+- NeoVim: [simpesys.nvim](https://github.com/parksb/simpesys.nvim)

@@ -8,26 +8,19 @@ Simpesys는 기본적으로 전체 문서 시스템을 트리로 모델링한다
 
 ## 시작하기
 
-Simpesys는 [Deno](https://deno.com) 런타임을 위한 패키지를 제공한다.
+Simpesys CLI 도구를 사용하면 쉽게 디지털 정원을 구축할 수 있다.
 
 ```sh
-$ deno add jsr:@simpesys/core
+$ deno run -R -W -E jsr:@simpesys/cli init my-garden
+$ cd my-garden
+$ deno task start
 ```
 
-Simpesys 프로젝트는 다음과 같은 디렉토리 구조를 갖는다.
+위 명령을 실행하면 브라우저에서 디지털 정원을 확인할 수 있다.
 
-```
-my-graden/
-├── deno.json
-├── app/
-│   └── main.ts
-└── docs/
-    ├── index.md
-    └── 404.md
-```
+![The landing page of the scaffolded digital garden.](/images/app-wiki.webp)
 
 Simpesys를 이용해 디지털 정원을 구축하는 자세한 과정은 [[getting-started]] 문서에서 소개한다.
-
 
 ## 설계 원칙
 

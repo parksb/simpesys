@@ -31,8 +31,7 @@
     "npm:es-toolkit@1": "1.43.0",
     "npm:es-toolkit@^1.43.0": "1.43.0",
     "npm:highlight.js@^11.11.1": "11.11.1",
-    "npm:hono@4": "4.10.8",
-    "npm:hono@^4.10.8": "4.10.8",
+    "npm:hono@4": "4.12.5",
     "npm:katex@~0.16.22": "0.16.22",
     "npm:markdown-it-anchor@^9.2.0": "9.2.0_@types+markdown-it@14.1.2_markdown-it@14.1.0",
     "npm:markdown-it-container@4": "4.0.0",
@@ -729,8 +728,8 @@
     "highlight.js@11.11.1": {
       "integrity": "sha512-Xwwo44whKBVCYoliBQwaPvtd/2tYFkRQtXDWj1nackaV2JPXx3L0+Jvd8/qCJ2p+ML0/XVkJ2q+Mr+UVdpJK5w=="
     },
-    "hono@4.10.8": {
-      "integrity": "sha512-DDT0A0r6wzhe8zCGoYOmMeuGu3dyTAE40HHjwUsWFTEy5WxK1x2WDSsBPlEXgPbRIFY6miDualuUDbasPogIww=="
+    "hono@4.12.5": {
+      "integrity": "sha512-3qq+FUBtlTHhtYxbxheZgY8NIFnkkC/MR8u5TTsr7YZ3wixryQ3cCwn3iZbg8p8B88iDBBAYSfZDS75t8MN7Vg=="
     },
     "iconv-lite@0.6.3": {
       "integrity": "sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==",
@@ -996,8 +995,7 @@
       "examples/homepage": {
         "dependencies": [
           "jsr:@hono/hono@4",
-          "jsr:@simpesys/core@*",
-          "npm:hono@^4.10.8"
+          "jsr:@simpesys/core@*"
         ]
       },
       "packages/app-bare": {

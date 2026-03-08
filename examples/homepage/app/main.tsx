@@ -1,5 +1,6 @@
 import { defineConfig, Simpesys } from "@simpesys/core";
-import { type Context, Hono } from "@hono/hono";
+import { type Context, Hono } from "hono";
+import { serveStatic } from "hono/deno";
 import { Layout } from "./components/layout.tsx";
 
 const config = defineConfig({
@@ -37,6 +38,7 @@ function documentResponse(id: string, c: Context) {
   return c.html(<Layout document={document} documents={documents} />);
 }
 
+app.get("/images/*", serveStatic({ root: "./" }));
 app.get("/", (c) => documentResponse("index", c));
 app.get("/*", (c) => {
   const path = c.req.path.slice(1);

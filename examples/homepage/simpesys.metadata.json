@@ -6,17 +6,17 @@
   },
   "index": {
     "createdAt": "2025-12-12T15:55:29.107Z",
-    "updatedAt": "2025-12-14T15:57:00.944Z",
-    "contentHash": "978b4fbf6093e61d540f2af4674155e1ce49f18e",
-    "previousContentHash": "60cccf1c4f26c6539b970eb4bba758b3c58fa708",
-    "previousUpdatedAt": "2025-12-14T15:54:42.366Z"
+    "updatedAt": "2026-03-08T09:23:44.250345947Z",
+    "contentHash": "b02a74a225a732e78a5ce3793e6083f30776ea3d",
+    "previousContentHash": "978b4fbf6093e61d540f2af4674155e1ce49f18e",
+    "previousUpdatedAt": "2025-12-14T15:57:00.944Z"
   },
   "ko/index": {
     "createdAt": "2025-12-13T12:03:38.423Z",
-    "updatedAt": "2025-12-14T15:57:14.14Z",
-    "contentHash": "87d94a15a7bed82faa73eaa3d6ce244cd9d64156",
-    "previousContentHash": "7004ce48e8796e4fed235d7519bf54d291552dd1",
-    "previousUpdatedAt": "2025-12-14T15:54:35.88Z"
+    "updatedAt": "2026-03-08T09:25:24.416788086Z",
+    "contentHash": "1ff402b5e280aa9f9571064566b2193d11cfeb46",
+    "previousContentHash": "ecc5a41dbf1720190fe0e23ace2cc00278a21c6c",
+    "previousUpdatedAt": "2026-03-08T09:25:23.043389893Z"
   },
   "ko/configuration": {
     "createdAt": "2025-12-13T11:15:12.316Z",
@@ -57,8 +57,10 @@
   },
   "ko/getting-started": {
     "createdAt": "2025-12-13T15:17:11.518Z",
-    "updatedAt": "2025-12-14T05:39:40.416Z",
-    "contentHash": "190f2b5255e65b22ed31a449a01e73bfc64dfa19"
+    "updatedAt": "2026-03-08T09:21:55.105351074Z",
+    "contentHash": "9c362f612a9d3333f4000755b3b730ca1b2233e4",
+    "previousContentHash": "04efb284b9215f712e812f24129c5bc1c06c52df",
+    "previousUpdatedAt": "2026-03-08T09:20:46.369406006Z"
   },
   "ko/showcases": {
     "createdAt": "2025-12-14T03:30:09.58Z",
@@ -67,8 +69,10 @@
   },
   "getting-started": {
     "createdAt": "2025-12-14T04:12:23.217Z",
-    "updatedAt": "2025-12-14T05:39:40.413Z",
-    "contentHash": "27ecb07f8fdea513078794be4d0360e32bcfcd6d"
+    "updatedAt": "2026-03-08T09:18:37.968603027Z",
+    "contentHash": "35a0edfe5d4cb98c2b257f1726e6f1cf211677d5",
+    "previousContentHash": "9c2c04d6ff6f143f3d44d0aff466eea79adffd32",
+    "previousUpdatedAt": "2026-03-08T09:18:05.89651001Z"
   },
   "architecture": {
     "createdAt": "2025-12-14T04:12:27.973Z",

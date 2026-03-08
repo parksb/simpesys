@@ -161,6 +161,9 @@ const styles = {
       padding: 0;
       word-break: normal;
     }
+    & img {
+      max-width: 100%;
+    }
     & table {
       border-collapse: collapse;
       margin: 1rem 0;
