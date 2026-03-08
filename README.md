@@ -2,11 +2,7 @@
 
 > https://pedia.simpesys.deno.net/
 
-Simpesys is a Markdown file–based documentation build tool that also serves as a complete documentation system for digital gardens.
-
-Simpesys models the entire document system as a tree. However, since documents can cross-reference each other, the hierarchical model forms a tree while the reference model can become a connected directed graph with circuits. This structure allows Simpesys to maintain a simple overall document structure while managing complex reference relationships between documents. Upon initialization, Simpesys reads the designated root Markdown document. Starting from the root document, it parses internal link syntax within the content and repeatedly reads connected documents to build the complete document tree. Simpesys constructs this document tree and provides APIs for working with it.
-
-The name "Simpesys" is a portmanteau of "[Simonpedia](https://github.com/parksb/pedia)" and "system", pronounced /sɪmˈpesɪs/.
+Simpesys is a Markdown file–based documentation build tool that also serves as a complete documentation system for digital gardens. The name "Simpesys" is a portmanteau of "[Simonpedia](https://github.com/parksb/pedia)" and "system", pronounced /sɪmˈpesɪs/.
 
 ## Getting Started
 
@@ -25,6 +21,8 @@ After running these commands, you can check out your digital garden in the brows
 For detailed instructions on building a digital garden with Simpesys, see the [Getting Started](https://pedia.simpesys.deno.net/getting-started) document.
 
 ## Design Principles
+
+Simpesys models the entire document system as a tree. However, since documents can cross-reference each other, the hierarchical model forms a tree while the reference model can become a connected directed graph with circuits. This structure allows Simpesys to maintain a simple overall document structure while managing complex reference relationships between documents. Upon initialization, Simpesys reads the designated root Markdown document. Starting from the root document, it parses internal link syntax within the content and repeatedly reads connected documents to build the complete document tree. Simpesys constructs this document tree and provides APIs for working with it.
 
 ### Document-Centric Design
 
