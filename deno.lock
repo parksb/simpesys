@@ -1015,6 +1015,7 @@
       "packages/cli": {
         "dependencies": [
           "jsr:@cliffy/command@^1.0.0-rc.7",
+          "jsr:@simpesys/core@0.5",
           "jsr:@std/fs@1",
           "jsr:@std/path@1",
           "npm:es-toolkit@1"

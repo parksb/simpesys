@@ -1,9 +1,9 @@
 import { type App, createApp, Simpesys } from "@simpesys/core";
-import denoJson from "./deno.json" with { type: "json" };
+import appManifest from "./deno.json" with { type: "json" };
 
 const simpesys = await new Simpesys().init();
 
-export default (req: Request): Response => {
+const handler = (req: Request): Response => {
   const url = new URL(req.url);
   const key = url.pathname === "/" ? "index" : url.pathname.slice(1);
   const doc = simpesys.getDocument(key) ?? simpesys.getDocument("404");
@@ -19,6 +19,8 @@ const readDoc = (name: string) =>
 
 export const app: App = createApp({
   simpesys,
+  entry: "main.ts",
+  handler,
   docs: {
     "index.md": await readDoc("index.md"),
     "404.md": await readDoc("404.md"),
@@ -27,7 +29,7 @@ export const app: App = createApp({
   manifest: {
     imports: {
       "@simpesys/core": "jsr:@simpesys/core@^0.5",
-      "@simpesys/app-bare": `jsr:@simpesys/app-bare@^${denoJson.version}`,
+      "@simpesys/app-bare": `jsr:@simpesys/app-bare@^${appManifest.version}`,
     },
   },
 });
