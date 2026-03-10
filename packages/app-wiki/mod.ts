@@ -1,19 +1,16 @@
-import { type App, createApp, Simpesys } from "@simpesys/core";
+import { type AppBase, defineApp, type Simpesys } from "@simpesys/core";
 import { createRouter } from "./router.tsx";
 import denoJson from "./deno.json" with { type: "json" };
-import type { Hono } from "@hono/hono";
-import type { BlankEnv, BlankSchema } from "@hono/hono/types";
-
-const simpesys = await new Simpesys().init();
-const router: Hono<BlankEnv, BlankSchema, "/"> = createRouter(simpesys);
 
 const readDoc = (name: string) =>
   fetch(new URL(`./docs/${name}`, import.meta.url)).then((r) => r.text());
 
-export const app: App = createApp({
-  simpesys,
-  entry: "main.tsx",
-  handler: router.fetch,
+function createHandler(simpesys: Simpesys): Deno.ServeHandler {
+  const router = createRouter(simpesys);
+  return router.fetch;
+}
+
+export default defineApp({
   docs: {
     "index.md": await readDoc("index.md"),
     "404.md": await readDoc("404.md"),
@@ -21,8 +18,9 @@ export const app: App = createApp({
   },
   manifest: {
     imports: {
-      "@simpesys/core": "jsr:@simpesys/core@^0.5",
+      "@simpesys/core": "jsr:@simpesys/core@^0.6",
       "@simpesys/app-wiki": `jsr:@simpesys/app-wiki@^${denoJson.version}`,
     },
   },
-});
+  createHandler,
+}) as AppBase;

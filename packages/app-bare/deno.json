@@ -1,9 +1,9 @@
 {
   "name": "@simpesys/app-bare",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "license": "GPL-3.0-or-later",
   "exports": "./mod.ts",
   "imports": {
-    "@simpesys/core": "jsr:@simpesys/core@^0.5"
+    "@simpesys/core": "jsr:@simpesys/core@^0.6"
   }
 }

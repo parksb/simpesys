@@ -2,7 +2,7 @@ import { Command } from "@cliffy/command";
 import { join, resolve, toFileUrl } from "@std/path";
 import { exists } from "@std/fs";
 import { logger } from "../utils/logger.ts";
-import type { App } from "@simpesys/core";
+import type { AppBase } from "@simpesys/core";
 
 export const initCommand = new Command()
   .description("Initialize a new Simpesys project")
@@ -37,10 +37,10 @@ export const initCommand = new Command()
       Deno.exit(1);
     });
 
-    const app: App = module.app;
+    const { definition }: AppBase = module.default;
 
-    if (!app || typeof app.docs !== "object") {
-      logger.error("App package must export 'app' with a 'docs' object");
+    if (!definition || typeof definition.docs !== "object") {
+      logger.error("App package must have a default export");
       Deno.exit(1);
     }
 
@@ -49,14 +49,14 @@ export const initCommand = new Command()
     await Deno.mkdir(join(projectDir, "docs"), { recursive: true });
     await Deno.mkdir(join(projectDir, "app"), { recursive: true });
 
-    for (const [filename, content] of Object.entries(app.docs)) {
+    for (const [filename, content] of Object.entries(definition.docs)) {
       await Deno.writeTextFile(join(projectDir, "docs", filename), content);
       logger.success(`Created docs/${filename}`);
     }
 
     const pkgName = await getAppPackageName(specifier, resolvedSpecifier);
     const imports: Record<string, string> = {
-      ...(app.manifest?.imports ?? {}),
+      ...(definition.manifest?.imports ?? {}),
     };
 
     if (isLocal) {
@@ -65,8 +65,8 @@ export const initCommand = new Command()
 
     const manifest = {
       tasks: {
-        start: `deno run -N -R -E -W app/${app.entry}`,
-        dev: `deno run -N -R -E -W --watch=app,docs app/${app.entry}`,
+        start: `deno run -N -R -E -W app/main.ts`,
+        dev: `deno run -N -R -E -W --watch=app,docs app/main.ts`,
       },
       imports,
       unstable: ["temporal"],
@@ -80,11 +80,18 @@ export const initCommand = new Command()
     logger.success("Created deno.json");
 
     await Deno.writeTextFile(
-      join(projectDir, "app", app.entry),
-      `import { app } from "${pkgName}";\nDeno.serve(app.handler);\n`,
+      join(projectDir, "app", "main.ts"),
+      `import appBase from "${pkgName}";
+
+const app = await appBase.createApp({
+  // simpesys: new Simpesys({ ... }), // Custom Simpesys instance
+  // handler: (simpesys, defaultHandler) => { ... }, // Custom handler
+});
+
+Deno.serve(app.handler);`,
     );
 
-    logger.success(`Created app/${app.entry}`);
+    logger.success(`Created app/main.ts`);
     logger.success(`Project '${name}' initialized`);
     logger.success(`Run 'cd ${name} && deno task start' to start the server`);
   });
