@@ -9,7 +9,7 @@ Simpesys is a Markdown file–based documentation build tool that also serves as
 You can quickly scaffold a digital garden using Simpesys CLI tool.
 
 ```sh
-$ deno run -R -W -E jsr:@simpesys/cli init my-garden
+$ deno run -R -W -E -N jsr:@simpesys/cli init my-garden
 $ cd my-garden
 $ deno task start
 ```

@@ -2,7 +2,7 @@
 
 This document explains how to build a digital garden using Simpesys.
 
-## Requirements
+## Prerequisites
 
 Simpesys requires [Deno](https://deno.com) runtime version 2.0 or higher. The package is distributed through [JSR](https://jsr.io) (JavaScript Registry).
 
@@ -11,7 +11,7 @@ Simpesys requires [Deno](https://deno.com) runtime version 2.0 or higher. The pa
 Simpesys offers a CLI tool, `@simpesys/cli`, to automatically scaffold a digital garden.
 
 ```sh
-$ deno run -R -W -E jsr:@simpesys/cli init my-garden
+$ deno run -R -W -E -N jsr:@simpesys/cli init my-garden
 $ cd my-garden
 $ deno task start
 ```
@@ -25,7 +25,7 @@ Since Simpesys is a documentation system, it stays decoupled from the applicatio
 To use a specific application, pass the `--app` flag to the CLI tool. The default application is `jsr:@simpesys/app-wiki`.
 
 ```sh
-$ deno run -R -W -E jsr:@simpesys/cli --app jsr:@simpesys/app-bare init my-garden
+$ deno run -R -W -E -N jsr:@simpesys/cli --app jsr:@simpesys/app-bare init my-garden
 ```
 
 ## Manual Setup
@@ -131,11 +131,11 @@ If the `syncMetadata` option was set to `true`, a `simpesys.metadata.json` file 
 
 ## Web Framework Integration
 
-The easiest way to serve a document tree built with Simpesys as a website is to use a web framework. Simpesys provides Markdown documents converted to HTML. The following is an example `app.ts` file written using [Hono](https://hono.dev/):
+The easiest way to serve a document tree built with Simpesys as a website is to use a web framework. Simpesys provides Markdown documents converted to HTML. The following is an example `app/main.ts` file written using [Hono](https://hono.dev/):
 
 ```typescript
 import { Simpesys } from "@simpesys/core";
-import { Hono } from "@hono/hono";
+import { type Context, Hono } from "@hono/hono";
 
 const simpesys = await new Simpesys()
   .init({ syncMetadata: Deno.env.get("ENV") !== "production" });
