@@ -18,6 +18,14 @@ $ deno task start
 
 Simpesys를 이용해 디지털 정원을 구축하는 자세한 과정은 [[getting-started]] 문서에서 소개한다.
 
+## 아키텍처
+
+Simpesys는 크게 세 개의 레이어로 구성되어 있다. 사용자 공간은 사용자가 Simpesys 프로젝트를 구축하고, 문서를 편집하고, 애플리케이션과 직접 상호작용하는 레이어다. Simpesys 코어는 문서 시스템의 핵심 컴포넌트를 정의하고, Simpesys 프로젝트의 빌드 파이프라인을 구현하는 레이어다. 이러한 핵심 로직은 `@simpesys/core` 패키지로 배포된다. 마지막으로 애플리케이션은 사용자 공간과 Simpesys 코어 사이를 잇는 레이어다. 애플리케이션은 실제로 사용자가 문서 시스템과 상호작용할 수 있는 인터페이스이자, 문서를 담고 있는 Simpesys 프로젝트 그 자체다. 그래서 애플리케이션은 사용자 공간에 속해 있다고 할 수 있다. 애플리케이션의 진입점은 `app/main.ts` 파일이다.
+
+![아키텍처 다이어그램. 크게 세 영역으로 나뉜다. 왼쪽 파란색 영역은 'User space'로, Browser와 Editor 두 가지 클라이언트가 있다. Browser는 중앙의 app/main.ts와 양방향으로 연결되고, Editor는 아래의 @simpesys/lsp와 점선 화살표로 연결된다. 중앙 노란색 영역인 app/main.ts 안에는 @simpesys/app-bare, @simpesys/app-wiki, Other Apps, docs/.md 네 개의 모듈이 포함되어 있다. 오른쪽 초록색 영역은 '@simpesys/core' 패키지로, Simpesys 클래스와 App 클래스가 있다. app/main.ts의 각 모듈은 화살표로 App 클래스를 가리키고, Simpesys는 오른쪽의 다섯 가지 핵심 모델인 Metadata, Config, Link, Document, Markdown과 연결된다. @simpesys/lsp는 점선 화살표로 docs/.md를 향해 연결된다.](/images/architecture.svg)
+
+Simpesys 아키텍처에 관한 더 자세한 내용은 [[architecture]] 문서에서 설명한다.
+
 ## 설계 원칙
 
 Simpesys는 기본적으로 전체 문서 시스템을 트리로 모델링한다. 하지만 각 문서는 상호 참조가 가능하기 때문에 문서의 위계 모델은 트리이지만, 참조 모델은 서킷(circuit)이 존재하는 연결 유향 그래프가 될 수 있다. 이러한 구조를 통해 심페시스는 전체적인 문서 구조를 간소하게 유지하면서도 문서 간의 복잡한 참조 관계를 관리할 수 있다. Simpesys를 초기화하면 지정된 루트 마크다운 문서를 읽는다. 루트 문서를 시작으로 내용에 포함된 내부 링크 문법을 파싱해 연결된 다른 문서를 읽는 과정을 반복하며 전체 문서 트리를 구축한다. Simpesys는 이렇게 문서 트리를 만들고, 이 문서 트리를 다루는데 필요한 API를 제공한다.

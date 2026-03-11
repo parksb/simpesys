@@ -6,17 +6,17 @@
   },
   "index": {
     "createdAt": "2025-12-12T15:55:29.107Z",
-    "updatedAt": "2026-03-08T09:23:44.250345947Z",
-    "contentHash": "b02a74a225a732e78a5ce3793e6083f30776ea3d",
-    "previousContentHash": "978b4fbf6093e61d540f2af4674155e1ce49f18e",
-    "previousUpdatedAt": "2025-12-14T15:57:00.944Z"
+    "updatedAt": "2026-03-11T15:58:01.928552979Z",
+    "contentHash": "71098d8e6ee299462219516f6c2095af99d7f1a1",
+    "previousContentHash": "c47b3d91b8df6fa3a912860c668e155c532d3017",
+    "previousUpdatedAt": "2026-03-11T15:57:31.968909912Z"
   },
   "ko/index": {
     "createdAt": "2025-12-13T12:03:38.423Z",
-    "updatedAt": "2026-03-08T09:25:24.416788086Z",
-    "contentHash": "1ff402b5e280aa9f9571064566b2193d11cfeb46",
-    "previousContentHash": "ecc5a41dbf1720190fe0e23ace2cc00278a21c6c",
-    "previousUpdatedAt": "2026-03-08T09:25:23.043389893Z"
+    "updatedAt": "2026-03-11T15:58:16.528012939Z",
+    "contentHash": "5e82176dccd384b8950326a493b44c2c34558da5",
+    "previousContentHash": "caea75c9054c42892130cde662dd069d8591df79",
+    "previousUpdatedAt": "2026-03-11T15:56:57.408523926Z"
   },
   "ko/configuration": {
     "createdAt": "2025-12-13T11:15:12.316Z",
@@ -25,8 +25,10 @@
   },
   "ko/architecture": {
     "createdAt": "2025-12-13T11:15:12.928Z",
-    "updatedAt": "2025-12-14T05:39:40.414Z",
-    "contentHash": "e47cc247df5d86f31acdc9ef719d9482fda2da6c"
+    "updatedAt": "2026-03-11T15:46:22.384858887Z",
+    "contentHash": "c48d95f800c972c03686c982a38f6ebc1959a777",
+    "previousContentHash": "154afa5a95a327564646b594fd95f8d7b8e9316e",
+    "previousUpdatedAt": "2026-03-11T15:45:46.257846924Z"
   },
   "ko/features": {
     "createdAt": "2025-12-13T11:35:45.746Z",
@@ -57,10 +59,10 @@
   },
   "ko/getting-started": {
     "createdAt": "2025-12-13T15:17:11.518Z",
-    "updatedAt": "2026-03-08T09:21:55.105351074Z",
-    "contentHash": "9c362f612a9d3333f4000755b3b730ca1b2233e4",
-    "previousContentHash": "04efb284b9215f712e812f24129c5bc1c06c52df",
-    "previousUpdatedAt": "2026-03-08T09:20:46.369406006Z"
+    "updatedAt": "2026-03-11T14:44:10.645539063Z",
+    "contentHash": "e072ce4313d176aaa9506bc97e7d9d202d309e19",
+    "previousContentHash": "9c362f612a9d3333f4000755b3b730ca1b2233e4",
+    "previousUpdatedAt": "2026-03-08T09:21:55.105351074Z"
   },
   "ko/showcases": {
     "createdAt": "2025-12-14T03:30:09.58Z",
@@ -69,15 +71,17 @@
   },
   "getting-started": {
     "createdAt": "2025-12-14T04:12:23.217Z",
-    "updatedAt": "2026-03-08T09:18:37.968603027Z",
-    "contentHash": "35a0edfe5d4cb98c2b257f1726e6f1cf211677d5",
-    "previousContentHash": "9c2c04d6ff6f143f3d44d0aff466eea79adffd32",
-    "previousUpdatedAt": "2026-03-08T09:18:05.89651001Z"
+    "updatedAt": "2026-03-11T14:44:10.641803955Z",
+    "contentHash": "68adaa3710621079c890c92ec6c8acbe2286820e",
+    "previousContentHash": "35a0edfe5d4cb98c2b257f1726e6f1cf211677d5",
+    "previousUpdatedAt": "2026-03-08T09:18:37.968603027Z"
   },
   "architecture": {
     "createdAt": "2025-12-14T04:12:27.973Z",
-    "updatedAt": "2025-12-14T05:39:40.411Z",
-    "contentHash": "6217c6863700102da42f820334513d05b5ecfd7d"
+    "updatedAt": "2026-03-11T15:49:13.054206055Z",
+    "contentHash": "622c6a60c2b5c153e08a4cd85239345065eaba08",
+    "previousContentHash": "221f5092bcd51f65385541b24cd53d464298ab61",
+    "previousUpdatedAt": "2026-03-11T15:49:08.179740967Z"
   },
   "configuration": {
     "createdAt": "2025-12-14T04:13:42.343Z",

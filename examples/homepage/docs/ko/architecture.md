@@ -2,9 +2,13 @@
 
 이 문서는 Simpesys의 핵심 데이터 구조와 빌드 파이프라인을 포함한 내부 아키텍처를 설명한다.
 
-Simpesys는 다단계 파이프라인을 통해 마크다운 문서를 처리한다. 시스템은 문서 키를 처리된 문서 객체에 매핑하는 문서 딕셔너리를 관리한다. 초기화 과정에서는 루트 문서에서 시작하는 너비 우선 탐색을 통해 문서를 탐색한다.
+![아키텍처 다이어그램. 크게 세 영역으로 나뉜다. 왼쪽 파란색 영역은 'User space'로, Browser와 Editor 두 가지 클라이언트가 있다. Browser는 중앙의 app/main.ts와 양방향으로 연결되고, Editor는 아래의 @simpesys/lsp와 점선 화살표로 연결된다. 중앙 노란색 영역인 app/main.ts 안에는 @simpesys/app-bare, @simpesys/app-wiki, Other Apps, docs/.md 네 개의 모듈이 포함되어 있다. 오른쪽 초록색 영역은 '@simpesys/core' 패키지로, Simpesys 클래스와 App 클래스가 있다. app/main.ts의 각 모듈은 화살표로 App 클래스를 가리키고, Simpesys는 오른쪽의 다섯 가지 핵심 모델인 Metadata, Config, Link, Document, Markdown과 연결된다. @simpesys/lsp는 점선 화살표로 docs/.md를 향해 연결된다.](/images/architecture.svg)
+
+Simpesys는 크게 세 개의 레이어로 구성되어 있다. 사용자 공간은 사용자가 Simpesys 프로젝트를 구축하고, 문서를 편집하고, 애플리케이션과 직접 상호작용하는 레이어다. Simpesys 코어는 문서 시스템의 핵심 컴포넌트를 정의하고, Simpesys 프로젝트의 빌드 파이프라인을 구현하는 레이어다. 이러한 핵심 로직은 `@simpesys/core` 패키지로 배포된다. 마지막으로 애플리케이션은 사용자 공간과 Simpesys 코어 사이를 잇는 레이어다. 애플리케이션은 실제로 사용자가 문서 시스템과 상호작용할 수 있는 인터페이스이자, 문서를 담고 있는 Simpesys 프로젝트 그 자체다. 그래서 애플리케이션은 사용자 공간에 속해 있다고 할 수 있다. 애플리케이션의 진입점은 `app/main.ts` 파일이다.
 
 ## 핵심 컴포넌트
+
+Simpesys 코어는 다단계 파이프라인을 통해 마크다운 문서를 처리한다. 시스템은 문서 키를 처리된 문서 객체에 매핑하는 문서 딕셔너리를 관리한다. 초기화 과정에서는 루트 문서에서 시작하는 너비 우선 탐색을 통해 문서를 탐색한다.
 
 ### Simpesys
 
