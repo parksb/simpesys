@@ -1,5 +1,5 @@
 import type { Simpesys } from "@simpesys/core";
-import { type Context, Hono } from "@hono/hono";
+import { type Context, Hono } from "hono";
 import { Layout } from "./components/layout.tsx";
 
 export function createRouter(simpesys: Simpesys) {
