@@ -147,7 +147,11 @@ export class Simpesys {
         document.referred,
         this.documents,
       );
-      document.markdown = prependToc(document.markdown);
+
+      if (this.config.docs.toc.autoInsert) {
+        document.markdown = prependToc(document.markdown);
+      }
+
       document.html = this.markdownConverter.render(document.markdown);
 
       document.html = withHTMLCodePreserved(document.html, (html) =>

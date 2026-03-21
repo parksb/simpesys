@@ -83,6 +83,11 @@ export interface Config {
      */
     toc: {
       /**
+       * Whether to automatically generate a table of contents below the title. (default: true)
+       */
+      autoInsert: boolean;
+
+      /**
        * The list type for the table of contents. (default: "ul")
        *
        * - "ul": Unordered list (bullet points)
@@ -115,6 +120,7 @@ export const DEFAULT_CONFIG: Config = {
     publicationsSectionTitle: ["Publications"],
     backlinksSectionTitle: "Backlinks",
     toc: {
+      autoInsert: true,
       listType: "ul",
       levels: [2, 3, 4],
     },

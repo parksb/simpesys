@@ -121,4 +121,27 @@ describe("Simpesys init", () => {
     expect(index?.html).toContain("<code>[[page1]]</code>");
     expect(index?.html).toMatch(/<pre[^>]*>.*\[\[page1\]\].*<\/pre>/s);
   });
+
+  it("should not insert table of contents when autoInsert is false", async () => {
+    const docsPath = `${FIXTURES_DIR}/basic`;
+
+    const simpesys = new Simpesys({
+      project: {
+        root: docsPath,
+        docs: docsPath,
+      },
+      docs: {
+        toc: {
+          autoInsert: false,
+        },
+      },
+    });
+    
+    await simpesys.init();
+
+    const index = simpesys.getDocument("index");
+
+    expect(index).toBeDefined();
+    expect(index?.markdown).not.toContain("[[toc]]");
+  });
 });
