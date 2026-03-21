@@ -144,4 +144,22 @@ describe("Simpesys init", () => {
     expect(index).toBeDefined();
     expect(index?.markdown).not.toContain("[[toc]]");
   });
+
+  it("should use filename as title when no heading is present", async () => {
+    const docsPath = `${FIXTURES_DIR}/without-title`;
+
+    const simpesys = new Simpesys({
+      project: {
+        root: docsPath,
+        docs: docsPath,
+      },
+    });
+
+    await simpesys.init();
+
+    const index = simpesys.getDocument("index");
+
+    expect(index).toBeDefined();
+    expect(index?.title).toBe("index");
+  });
 });

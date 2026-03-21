@@ -74,7 +74,7 @@ export class Simpesys {
           this.config.hooks?.manipulateMarkdown?.(markdown, candidate) ??
             markdown;
 
-        const title = markdown.match(/^#\s.*/)![0].replace(/^#\s/, "");
+        const title = markdown.match(/^#\s.*/)?.[0].replace(/^#\s/, "") ?? filename;
 
         const document: Document = {
           title,
