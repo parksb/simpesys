@@ -123,8 +123,21 @@ async function resolveAppSpecifier(
   specifier: string,
   cwd: string,
 ): Promise<string> {
+  if (specifier.startsWith("jsr:")) {
+    const rest = specifier.slice(4);
+    const hasVersion = rest.startsWith("@")
+      ? rest.indexOf("@", 1) !== -1
+      : rest.indexOf("@") !== -1;
+
+    if (hasVersion) return specifier;
+
+    const metaUrl = `https://jsr.io/${rest}/meta.json`;
+    const meta = await fetch(metaUrl).then((r) => r.json());
+
+    return `${specifier}@${meta.latest}`;
+  }
+
   if (
-    specifier.startsWith("jsr:") ||
     specifier.startsWith("npm:") ||
     specifier.startsWith("https:")
   ) {
