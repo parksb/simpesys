@@ -122,6 +122,14 @@ export const appendReferred = (
 ) => {
   if (referred.length === 0) return markdown;
 
+  if (config.docs.backlinksSectionTitle === null) {
+    return labelInternalLinks(
+      config,
+      markdown,
+      dict,
+    );
+  }
+
   const referredList = referred
     .map(
       ({ document, sentences }) =>

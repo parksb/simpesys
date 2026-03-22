@@ -81,8 +81,9 @@ export interface Config {
 
     /**
      * The h2 title of the backlinks section. (default: "Backlinks")
+     * If set to null, the backlinks section will not be generated.
      */
-    backlinksSectionTitle: string;
+    backlinksSectionTitle: string | null;
 
     /**
      * Configuration for code blocks.

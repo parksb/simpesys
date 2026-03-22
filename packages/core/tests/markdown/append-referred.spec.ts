@@ -155,5 +155,13 @@ describe("appendReferred", () => {
       expect(result).toContain("> First sentence.");
       expect(result).toContain("> Second sentence.");
     });
+
+    it("should not append referred section if title is null", () => {
+      config.docs.backlinksSectionTitle = null;
+      const markdown = "# Title\n\nSome content.";
+      const referred: Reference[] = [{ document: dict["doc1"], sentences: [] }];
+      const result = appendReferred(config, markdown, referred, dict);
+      expect(result).toBe(markdown);
+    });
   });
 });
