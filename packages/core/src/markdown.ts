@@ -7,6 +7,7 @@ import mdInlineComment from "markdown-it-inline-comments";
 import mdCheckbox from "markdown-it-task-checkbox";
 import mdExternalLink from "markdown-it-external-links";
 import mdMermaid from "@markslides/markdown-it-mermaid";
+import mdEmbed from "markdown-it-html5-embed";
 import mdContainer from "markdown-it-container";
 import mdImSize from "markdown-it-imsize";
 import mdShiki from "@shikijs/markdown-it";
@@ -74,6 +75,11 @@ export async function getMarkdownConverter(config: Config) {
           }</summary>\n`;
         }
         return "</details>\n";
+      },
+    })
+    .use(mdEmbed, {
+      html5embed: {
+        useImageSyntax: true,
       },
     })
     .use(mdContainer, "NOTE", {
