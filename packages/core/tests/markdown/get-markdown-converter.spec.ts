@@ -5,9 +5,9 @@ import { DEFAULT_CONFIG } from "../../src/config.ts";
 
 describe("getMarkdownConverter", () => {
   describe("toc.listType", () => {
-    it("should render toc as unordered list by default", () => {
+    it("should render toc as unordered list by default", async () => {
       const config = { ...DEFAULT_CONFIG };
-      const md = getMarkdownConverter(config);
+      const md = await getMarkdownConverter(config);
       const markdown = "[[toc]]\n\n## Section 1\n\n## Section 2";
       const html = md.render(markdown);
 
@@ -15,7 +15,7 @@ describe("getMarkdownConverter", () => {
       expect(html).not.toContain("<ol>");
     });
 
-    it("should render toc as ordered list when listType is 'ol'", () => {
+    it("should render toc as ordered list when listType is 'ol'", async () => {
       const config = {
         ...DEFAULT_CONFIG,
         docs: {
@@ -26,7 +26,7 @@ describe("getMarkdownConverter", () => {
           },
         },
       };
-      const md = getMarkdownConverter(config);
+      const md = await getMarkdownConverter(config);
       const markdown = "[[toc]]\n\n## Section 1\n\n## Section 2";
       const html = md.render(markdown);
 
@@ -35,9 +35,9 @@ describe("getMarkdownConverter", () => {
   });
 
   describe("toc.levels", () => {
-    it("should include h2, h3, h4 by default", () => {
+    it("should include h2, h3, h4 by default", async () => {
       const config = { ...DEFAULT_CONFIG };
-      const md = getMarkdownConverter(config);
+      const md = await getMarkdownConverter(config);
       const markdown = "[[toc]]\n\n## H2\n\n### H3\n\n#### H4\n\n##### H5";
       const html = md.render(markdown);
 
@@ -47,7 +47,7 @@ describe("getMarkdownConverter", () => {
       expect(html).not.toContain("H5</a></li>");
     });
 
-    it("should only include specified levels", () => {
+    it("should only include specified levels", async () => {
       const config = {
         ...DEFAULT_CONFIG,
         docs: {
@@ -58,7 +58,7 @@ describe("getMarkdownConverter", () => {
           },
         },
       };
-      const md = getMarkdownConverter(config);
+      const md = await getMarkdownConverter(config);
       const markdown = "[[toc]]\n\n## H2\n\n### H3\n\n#### H4";
       const html = md.render(markdown);
 
@@ -67,7 +67,7 @@ describe("getMarkdownConverter", () => {
       expect(html).not.toContain("H4</a></li>");
     });
 
-    it("should include h2 and h3 when levels is [2, 3]", () => {
+    it("should include h2 and h3 when levels is [2, 3]", async () => {
       const config = {
         ...DEFAULT_CONFIG,
         docs: {
@@ -78,7 +78,7 @@ describe("getMarkdownConverter", () => {
           },
         },
       };
-      const md = getMarkdownConverter(config);
+      const md = await getMarkdownConverter(config);
       const markdown = "[[toc]]\n\n## H2\n\n### H3\n\n#### H4";
       const html = md.render(markdown);
 

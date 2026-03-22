@@ -1,6 +1,6 @@
 {
   "name": "@simpesys/core",
-  "version": "0.6.1-canary.2",
+  "version": "0.6.1-canary.3",
   "license": "GPL-3.0-or-later",
   "exports": "./mod.ts",
   "publish": {
@@ -11,6 +11,7 @@
   },
   "imports": {
     "@markslides/markdown-it-mermaid": "npm:@markslides/markdown-it-mermaid@^0.3.6",
+    "@shikijs/markdown-it": "npm:@shikijs/markdown-it@^4.0.2",
     "@std/encoding": "jsr:@std/encoding@^1.0.10",
     "@std/expect": "jsr:@std/expect@^1.0.17",
     "@std/path": "jsr:@std/path@^1.0.8",
@@ -29,8 +30,7 @@
     "markdown-it-texmath": "npm:markdown-it-texmath@^1.0.0",
     "dayjs": "npm:dayjs@^1.11.13",
     "denque": "npm:denque@^2.1.0",
-    "katex": "npm:katex@^0.16.22",
-    "highlight.js": "npm:highlight.js@^11.11.1"
+    "katex": "npm:katex@^0.16.22"
   },
   "test": {
     "include": [

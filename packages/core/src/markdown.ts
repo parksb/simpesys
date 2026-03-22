@@ -1,5 +1,4 @@
 import MarkdownIt from "markdown-it";
-import hljs from "highlight.js";
 import mdFootnote from "markdown-it-footnote";
 import mdTex from "markdown-it-texmath";
 import mdAnchor from "markdown-it-anchor";
@@ -10,6 +9,7 @@ import mdExternalLink from "markdown-it-external-links";
 import mdMermaid from "@markslides/markdown-it-mermaid";
 import mdContainer from "markdown-it-container";
 import mdImSize from "markdown-it-imsize";
+import mdShiki from "@shikijs/markdown-it";
 import { full as mdEmoji } from "markdown-it-emoji";
 import * as katex from "katex";
 
@@ -20,7 +20,14 @@ import { getLink, getLinkRegex, resolveLink } from "./link.ts";
 /**
  * Create a MarkdownIt converter with predefined plugins and options.
  */
-export function getMarkdownConverter(config: Config) {
+export async function getMarkdownConverter(config: Config) {
+  const shiki = await mdShiki({
+    themes: {
+      light: config.docs.code.themes.light,
+      dark: config.docs.code.themes.dark,
+    },
+  });
+
   const md = MarkdownIt({
     html: true,
     xhtmlOut: false,
@@ -29,15 +36,8 @@ export function getMarkdownConverter(config: Config) {
     linkify: true,
     typographer: true,
     quotes: "“”‘’",
-    highlight: (str: string, lang: string): string => {
-      if (lang && hljs.getLanguage(lang)) {
-        return `<pre class="hljs"><code>${
-          hljs.highlight(str, { language: lang }).value
-        }</code></pre>`;
-      }
-      return `<pre class="hljs"><code>${md.utils.escapeHtml(str)}</code></pre>`;
-    },
   })
+    .use(shiki)
     .use(mdFootnote)
     .use(mdInlineComment)
     .use(mdMermaid)
@@ -186,8 +186,8 @@ export const findSubdocs = (
   const parseSection = (sectionContent: string) => {
     const lines = sectionContent.trim().split("\n");
     const pubIndex = lines.findIndex((line) =>
-      config.docs.publicationsSectionTitle.some((t) =>
-        line.trim() === `### ${t}`
+      config.docs.publicationsSectionTitle.some(
+        (t) => line.trim() === `### ${t}`,
       )
     );
 

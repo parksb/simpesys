@@ -79,6 +79,26 @@ export interface Config {
     backlinksSectionTitle: string;
 
     /**
+     * Configuration for code blocks.
+     */
+    code: {
+      /**
+       * The theme for syntax highlighting.
+       * Find available themes in shiki: https://shiki.style/themes
+       */
+      themes: {
+        /**
+         * The light theme for syntax highlighting. (default: "github-light")
+         */
+        light: string;
+        /**
+         * The dark theme for syntax highlighting. (default: "github-dark")
+         */
+        dark: string;
+      };
+    };
+
+    /**
      * Table of contents configuration.
      */
     toc: {
@@ -130,6 +150,12 @@ export const DEFAULT_CONFIG: Config = {
     subdocumentsSectionTitle: ["Subpages"],
     publicationsSectionTitle: ["Publications"],
     backlinksSectionTitle: "Backlinks",
+    code: {
+      themes: {
+        light: "github-light",
+        dark: "github-dark",
+      },
+    },
     toc: {
       listType: "ul",
       levels: [2, 3, 4],

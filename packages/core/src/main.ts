@@ -22,7 +22,7 @@ import {
 } from "./metadata.ts";
 
 export class Simpesys {
-  private markdownConverter: MarkdownIt;
+  private markdownConverter: Promise<MarkdownIt>;
 
   private documents: DocumentDict = {};
   private written: Set<string> = new Set([]);
@@ -151,7 +151,7 @@ export class Simpesys {
 
       document.markdown = prependToc(this.config, document.markdown);
 
-      document.html = this.markdownConverter.render(document.markdown);
+      document.html = (await this.markdownConverter).render(document.markdown);
 
       document.html = withHTMLCodePreserved(document.html, (html) =>
         html
