@@ -83,11 +83,6 @@ export interface Config {
      */
     toc: {
       /**
-       * Whether to automatically generate a table of contents below the title. (default: true)
-       */
-      autoInsert: boolean;
-
-      /**
        * The list type for the table of contents. (default: "ul")
        *
        * - "ul": Unordered list (bullet points)
@@ -99,6 +94,22 @@ export interface Config {
        * The heading levels to include in the table of contents. (default: [2, 3, 4])
        */
       levels: number[];
+
+      /**
+       * Configuration for the table of contents marker.
+       */
+      marker: {
+        /**
+         * A default marker for table of contents. (default: [[toc]])
+         * If set to null, the table of contents will not be automatically inserted.
+         */
+        default: string | null;
+
+        /**
+         * A pattern to identify the marker for table of contents. (default: /^\[\[toc\]\]/im)
+         */
+        pattern: RegExp;
+      };
     };
   };
   hooks: Hooks;
@@ -120,9 +131,12 @@ export const DEFAULT_CONFIG: Config = {
     publicationsSectionTitle: ["Publications"],
     backlinksSectionTitle: "Backlinks",
     toc: {
-      autoInsert: true,
       listType: "ul",
       levels: [2, 3, 4],
+      marker: {
+        default: "[[toc]]",
+        pattern: /^\[\[toc\]\]/im,
+      },
     },
   },
   hooks: {

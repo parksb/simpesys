@@ -122,29 +122,6 @@ describe("Simpesys init", () => {
     expect(index?.html).toMatch(/<pre[^>]*>.*\[\[page1\]\].*<\/pre>/s);
   });
 
-  it("should not insert table of contents when autoInsert is false", async () => {
-    const docsPath = `${FIXTURES_DIR}/basic`;
-
-    const simpesys = new Simpesys({
-      project: {
-        root: docsPath,
-        docs: docsPath,
-      },
-      docs: {
-        toc: {
-          autoInsert: false,
-        },
-      },
-    });
-    
-    await simpesys.init();
-
-    const index = simpesys.getDocument("index");
-
-    expect(index).toBeDefined();
-    expect(index?.markdown).not.toContain("[[toc]]");
-  });
-
   it("should use filename as title when no heading is present", async () => {
     const docsPath = `${FIXTURES_DIR}/without-title`;
 
@@ -161,5 +138,31 @@ describe("Simpesys init", () => {
 
     expect(index).toBeDefined();
     expect(index?.title).toBe("index");
+  });
+
+  it("should use custom table of contents marker when specified", async () => {
+    const docsPath = `${FIXTURES_DIR}/with-subdocs`;
+
+    const simpesys = new Simpesys({
+      project: {
+        root: docsPath,
+        docs: docsPath,
+      },
+      docs: {
+        toc: {
+          marker: {
+            default: "::: toc :::",
+            pattern: /^::: toc :::/im,
+          },
+        },
+      },
+    });
+
+    await simpesys.init();
+
+    const index = simpesys.getDocument("index");
+
+    expect(index).toBeDefined();
+    expect(index?.html).toContain('<div class="table-of-contents">');
   });
 });

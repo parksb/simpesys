@@ -74,7 +74,8 @@ export class Simpesys {
           this.config.hooks?.manipulateMarkdown?.(markdown, candidate) ??
             markdown;
 
-        const title = markdown.match(/^#\s.*/)?.[0].replace(/^#\s/, "") ?? filename;
+        const title = markdown.match(/^#\s.*/)?.[0].replace(/^#\s/, "") ??
+          filename;
 
         const document: Document = {
           title,
@@ -148,9 +149,7 @@ export class Simpesys {
         this.documents,
       );
 
-      if (this.config.docs.toc.autoInsert) {
-        document.markdown = prependToc(document.markdown);
-      }
+      document.markdown = prependToc(this.config, document.markdown);
 
       document.html = this.markdownConverter.render(document.markdown);
 

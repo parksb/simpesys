@@ -53,6 +53,7 @@ export function getMarkdownConverter(config: Config) {
       includeLevel: config.docs.toc.levels,
       listType: config.docs.toc.listType,
       format: (content: string) => content.replace(/\[\^.*\]/, ""),
+      markerPattern: config.docs.toc.marker.pattern,
     })
     .use(mdCheckbox, {
       disabled: true,
@@ -92,10 +93,14 @@ export function getMarkdownConverter(config: Config) {
 /**
  * Insert table of contents right after the first line of the markdown.
  */
-export const prependToc = (markdown: string) => {
+export const prependToc = (config: Config, markdown: string) => {
+  if (!config.docs.toc.marker.default) return markdown;
+
   const lines = markdown.split("\n");
   if (lines.length === 0) return markdown;
-  return [lines[0], "[[toc]]", ...lines.slice(1)].join("\n");
+  return [lines[0], config.docs.toc.marker.default, ...lines.slice(1)].join(
+    "\n",
+  );
 };
 
 /**
