@@ -77,21 +77,23 @@ export async function getMarkdownConverter(config: Config) {
         return "</details>\n";
       },
     })
-    .use(mdEmbed, {
-      html5embed: {
-        useImageSyntax: true,
-      },
-    })
     .use(mdContainer, "NOTE", {
       validate: (param: string) => param.trim() == "NOTE",
     })
     .use(mdContainer, "INFO", {
       validate: (param: string) => param.trim() == "INFO",
     })
+    .use(mdEmbed, {
+      html5embed: {
+        useImageSyntax: true,
+      },
+    })
     .use(mdExternalLink, {
       externalClassName: "external",
       internalDomains: [config.web.domain.replace(/https?:\/\//, "")],
     });
+
+  config.hooks?.configureMarkdownConverter?.(md);
 
   return md;
 }

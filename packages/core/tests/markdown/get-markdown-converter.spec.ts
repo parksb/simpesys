@@ -1,5 +1,7 @@
 import { describe, it } from "@std/testing/bdd";
 import { expect } from "@std/expect";
+import type MarkdownIt from "markdown-it";
+import mdContainer from "markdown-it-container";
 import { getMarkdownConverter } from "../../src/markdown.ts";
 import { DEFAULT_CONFIG } from "../../src/config.ts";
 
@@ -85,6 +87,26 @@ describe("getMarkdownConverter", () => {
       expect(html).toContain("H2</a>");
       expect(html).toContain("H3</a>");
       expect(html).not.toContain("H4</a></li>");
+    });
+  });
+
+  describe("configureMarkdownConverter", () => {
+    it("should allow adding plugins via hook", async () => {
+      const config = {
+        ...DEFAULT_CONFIG,
+        hooks: {
+          ...DEFAULT_CONFIG.hooks,
+          configureMarkdownConverter: (md: MarkdownIt) => {
+            md.use(mdContainer, "WARNING", {
+              validate: (param: string) => param.trim() === "WARNING",
+            });
+          },
+        },
+      };
+      const md = await getMarkdownConverter(config);
+      const html = md.render("::: WARNING\nThis is a warning.\n:::");
+
+      expect(html).toContain('<div class="WARNING">');
     });
   });
 });

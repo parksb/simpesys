@@ -1,4 +1,5 @@
 import { toMerged } from "es-toolkit";
+import type MarkdownIt from "markdown-it";
 import type { DocumentCandidate } from "./document.ts";
 import type { LinkStyle } from "./link.ts";
 
@@ -19,6 +20,11 @@ export interface Hooks {
    * A hook that is called when an internal link cannot be resolved.
    */
   onInternalLinkUnresolved?: (error: Error) => void;
+
+  /**
+   * A hook to customize the MarkdownIt converter after default plugins are applied.
+   */
+  configureMarkdownConverter?: (md: MarkdownIt) => void;
 
   /**
    * A hook to replace labeled internal links in the markdown content.
