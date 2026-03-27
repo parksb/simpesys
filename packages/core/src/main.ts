@@ -12,7 +12,6 @@ import {
 } from "./markdown.ts";
 import type { Document, DocumentCandidate, DocumentDict } from "./document.ts";
 import { type Config, type DeepPartial, DEFAULT_CONFIG } from "./config.ts";
-import type MarkdownIt from "markdown-it";
 import { getLinkRegex } from "./link.ts";
 import {
   getFileMetadata,
@@ -22,8 +21,6 @@ import {
 } from "./metadata.ts";
 
 export class Simpesys {
-  private markdownConverter: Promise<MarkdownIt>;
-
   private documents: DocumentDict = {};
   private written: Set<string> = new Set([]);
 
@@ -31,7 +28,6 @@ export class Simpesys {
 
   constructor(config: DeepPartial<Config> = {}) {
     this.config = toMerged(DEFAULT_CONFIG, config);
-    this.markdownConverter = getMarkdownConverter(this.config);
   }
 
   /**
@@ -141,6 +137,11 @@ export class Simpesys {
       }
     }
 
+    const markdownConverter = await getMarkdownConverter(
+      this.config,
+      this.documents,
+    );
+
     for (const document of Object.values(this.documents)) {
       document.markdown = appendReferred(
         this.config,
@@ -151,7 +152,7 @@ export class Simpesys {
 
       document.markdown = prependToc(this.config, document.markdown);
 
-      document.html = (await this.markdownConverter).render(document.markdown);
+      document.html = markdownConverter.render(document.markdown);
 
       document.html = withHTMLCodePreserved(document.html, (html) =>
         html

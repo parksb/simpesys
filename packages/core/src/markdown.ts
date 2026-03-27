@@ -10,7 +10,10 @@ import mdMermaid from "@markslides/markdown-it-mermaid";
 import mdEmbed from "markdown-it-html5-embed";
 import mdContainer from "markdown-it-container";
 import mdImSize from "markdown-it-imsize";
-import mdShiki from "@shikijs/markdown-it";
+import { fromHighlighter as mdShikiCore } from "@shikijs/markdown-it/core";
+import { createHighlighterCore } from "@shikijs/core";
+import type { HighlighterGeneric } from "shiki";
+import { createJavaScriptRegexEngine } from "@shikijs/engine-javascript";
 import { full as mdEmoji } from "markdown-it-emoji";
 import * as katex from "katex";
 
@@ -21,8 +24,31 @@ import { getLink, getLinkRegex, resolveLink } from "./link.ts";
 /**
  * Create a MarkdownIt converter with predefined plugins and options.
  */
-export async function getMarkdownConverter(config: Config) {
-  const shiki = await mdShiki({
+export async function getMarkdownConverter(
+  config: Config,
+  documents: DocumentDict = {},
+) {
+  let codeLanguages: string[] = [];
+  if (config.docs.code.languages === "auto") {
+    codeLanguages = extractCodeLanguages(
+      Object.values(documents).map((doc) => doc.markdown),
+    );
+  } else {
+    codeLanguages = Array.isArray(config.docs.code.languages)
+      ? config.docs.code.languages
+      : [];
+  }
+
+  const highlighter = await createHighlighterCore({
+    themes: [
+      import(`@shikijs/themes/${config.docs.code.themes.light}`),
+      import(`@shikijs/themes/${config.docs.code.themes.dark}`),
+    ],
+    langs: codeLanguages.map((lang) => import(`@shikijs/langs/${lang}`)),
+    engine: createJavaScriptRegexEngine(),
+  });
+
+  const shiki = mdShikiCore(highlighter as HighlighterGeneric<string, string>, {
     themes: {
       light: config.docs.code.themes.light,
       dark: config.docs.code.themes.dark,
@@ -366,4 +392,20 @@ const withCodeBlocksPreserved = (
  */
 const stripCodeBlocks = (markdown: string): string => {
   return markdown.replace(/```[\s\S]*?```/g, "").replace(/`[^`]+`/g, "");
+};
+
+/**
+ * Extract language identifiers from fenced code blocks across multiple markdown strings.
+ */
+const extractCodeLanguages = (markdowns: string[]): string[] => {
+  const langs = new Set<string>();
+  const fence = /^```(\w+)/gm;
+
+  for (const md of markdowns) {
+    for (const match of md.matchAll(fence)) {
+      langs.add(match[1]);
+    }
+  }
+
+  return [...langs];
 };

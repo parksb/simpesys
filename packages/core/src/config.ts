@@ -103,6 +103,12 @@ export interface Config {
          */
         dark: string;
       };
+      /**
+       * Languages to load for syntax highlighting. (default: "auto")
+       * - "auto": Detect languages from code fences in documents.
+       * - string[]: Explicitly specify languages to load, e.g., ["javascript", "python"].
+       */
+      languages: "auto" | string[];
     };
 
     /**
@@ -162,6 +168,7 @@ export const DEFAULT_CONFIG: Config = {
         light: "github-light",
         dark: "github-dark",
       },
+      languages: "auto",
     },
     toc: {
       listType: "ul",
