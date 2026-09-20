@@ -1,6 +1,6 @@
 {
   "name": "@simpesys/core",
-  "version": "0.6.1-canary.8",
+  "version": "0.6.1-canary.9",
   "license": "GPL-3.0-or-later",
   "exports": "./mod.ts",
   "publish": {
@@ -11,12 +11,12 @@
   },
   "imports": {
     "@markslides/markdown-it-mermaid": "npm:@markslides/markdown-it-mermaid@^0.3.6",
-    "@shikijs/core": "npm:@shikijs/core@^4.0.2",
-    "@shikijs/engine-javascript": "npm:@shikijs/engine-javascript@^4.0.2",
-    "@shikijs/langs": "npm:@shikijs/langs@^4.0.2",
-    "@shikijs/markdown-it": "npm:@shikijs/markdown-it@^4.0.2",
-    "@shikijs/markdown-it/core": "npm:@shikijs/markdown-it@^4.0.2/core",
-    "@shikijs/themes": "npm:@shikijs/themes@^4.0.2",
+    "@shikijs/core": "npm:@shikijs/core@^4.4.3",
+    "@shikijs/engine-oniguruma": "npm:@shikijs/engine-oniguruma@^4.4.3",
+    "@shikijs/langs": "npm:@shikijs/langs@^4.4.3",
+    "@shikijs/markdown-it": "npm:@shikijs/markdown-it@^4.4.3",
+    "@shikijs/markdown-it/core": "npm:@shikijs/markdown-it@^4.4.3/core",
+    "@shikijs/themes": "npm:@shikijs/themes@^4.4.3",
     "shiki": "npm:shiki@^4.0.2",
     "@std/encoding": "jsr:@std/encoding@^1.0.10",
     "@std/expect": "jsr:@std/expect@^1.0.17",

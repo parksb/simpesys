@@ -13,7 +13,7 @@ import mdImSize from "markdown-it-imsize";
 import { fromHighlighter as mdShikiCore } from "@shikijs/markdown-it/core";
 import { createHighlighterCore } from "@shikijs/core";
 import type { HighlighterGeneric } from "shiki";
-import { createJavaScriptRegexEngine } from "@shikijs/engine-javascript";
+import { createOnigurumaEngine } from "@shikijs/engine-oniguruma";
 import { full as mdEmoji } from "markdown-it-emoji";
 import * as katex from "katex";
 
@@ -45,7 +45,9 @@ export async function getMarkdownConverter(
       import(`@shikijs/themes/${config.docs.code.themes.dark}`),
     ],
     langs: codeLanguages.map((lang) => import(`@shikijs/langs/${lang}`)),
-    engine: createJavaScriptRegexEngine(),
+    engine: createOnigurumaEngine(
+      import("@shikijs/engine-oniguruma/wasm-inlined"),
+    ),
   });
 
   const shiki = mdShikiCore(highlighter as HighlighterGeneric<string, string>, {
