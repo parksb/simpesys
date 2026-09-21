@@ -189,6 +189,19 @@ export const appendReferred = (
 };
 
 /**
+ * Split a document into sentences for backlink excerpts.
+ */
+export const splitReferenceSentences = (markdown: string): string[] =>
+  markdown
+    .split(/(?<!\{[}]*)(?<=다\.|[가까]\?\s)(?![}]*\})|\n/)
+    .map((sentence) =>
+      sentence
+        .trim()
+        .replace(/^(-\s|\*\s|\d\.\s|>\s|#+\s)/g, "")
+        .trim()
+    );
+
+/**
  * Find the sentences that refer to the word.
  */
 export const findReferredSentences = (
@@ -196,20 +209,14 @@ export const findReferredSentences = (
   markdown: string,
   word: string,
   dict: DocumentDict,
+  sentences: string[] = splitReferenceSentences(markdown),
 ) => {
   const regex = getLinkRegex(config.docs.linkStyle);
   const linkPattern = regex.forKey(word);
   const labeledLinkPattern = regex.forKeyLabeled(word);
 
   return (
-    markdown
-      .split(/(?<!\{[}]*)(?<=다\.|[가까]\?\s)(?![}]*\})|\n/)
-      .map((sentence) =>
-        sentence
-          .trim()
-          .replace(/^(-\s|\*\s|\d\.\s|>\s|#+\s)/g, "")
-          .trim()
-      )
+    sentences
       .filter((sentence) => {
         linkPattern.lastIndex = 0;
         return linkPattern.test(sentence);

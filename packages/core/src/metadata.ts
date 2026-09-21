@@ -81,13 +81,14 @@ export async function getFileMetadata(
   filePath: string,
   content: string,
 ): Promise<DocumentMetadata> {
-  const stat = await Deno.stat(filePath);
+  const [stat, contentHash] = await Promise.all([
+    Deno.stat(filePath),
+    computeContentHash(content),
+  ]);
 
   const createdAt = stat.birthtime
     ? Temporal.Instant.fromEpochMilliseconds(stat.birthtime.getTime())
     : Temporal.Now.instant();
-
-  const contentHash = await computeContentHash(content);
 
   return { createdAt, updatedAt: createdAt, contentHash };
 }

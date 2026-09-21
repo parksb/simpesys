@@ -8,6 +8,7 @@ import {
   getMarkdownConverter,
   labelInternalLinks,
   prependToc,
+  splitReferenceSentences,
   withHTMLCodePreserved,
 } from "./markdown.ts";
 import type { Document, DocumentCandidate, DocumentDict } from "./document.ts";
@@ -124,7 +125,12 @@ export class Simpesys {
         document.filename,
       );
 
-      for (const reference of findReferences(this.config, document.markdown)) {
+      const references = findReferences(this.config, document.markdown);
+      const sentences = references.length
+        ? splitReferenceSentences(document.markdown)
+        : [];
+
+      for (const reference of references) {
         this.documents[reference].referred.push({
           document,
           sentences: findReferredSentences(
@@ -132,6 +138,7 @@ export class Simpesys {
             document.markdown,
             this.documents[reference].filename,
             this.documents,
+            sentences,
           ),
         });
       }

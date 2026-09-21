@@ -2,6 +2,7 @@ import { createHighlighterCore, isSpecialLang } from "@shikijs/core";
 import { createOnigurumaEngine } from "@shikijs/engine-oniguruma";
 import { languageAliasNames, languageNames } from "@shikijs/langs";
 import type MarkdownIt from "markdown-it";
+import { cacheRegexes } from "./regex.ts";
 import type { Config } from "./config.ts";
 
 type Highlighter = Awaited<ReturnType<typeof createHighlighterCore>>;
@@ -45,13 +46,7 @@ function createHighlighterLoader() {
     languages: string[],
     themes: Themes,
   ): Promise<Highlighter> {
-    highlighterPromise ??= createHighlighterCore({
-      langs: [],
-      themes: [],
-      engine: createOnigurumaEngine(
-        import("@shikijs/engine-oniguruma/wasm-inlined"),
-      ),
-    }).catch((error) => {
+    highlighterPromise ??= createHighlighter().catch((error) => {
       highlighterPromise = undefined;
       throw error;
     });
@@ -127,4 +122,24 @@ function createCache(maxBytes: number) {
   }
 
   return { maxBytes, get, set };
+}
+
+async function createHighlighter(): Promise<Highlighter> {
+  const engine = cacheRegexes(
+    await createOnigurumaEngine(
+      import("@shikijs/engine-oniguruma/wasm-inlined"),
+    ),
+  );
+
+  const highlighter = await createHighlighterCore({
+    langs: [],
+    themes: [],
+    engine,
+  });
+
+  const codeToHtml = highlighter.codeToHtml;
+  highlighter.codeToHtml = (...args) =>
+    engine.withCachedMatches(() => codeToHtml(...args));
+
+  return highlighter;
 }
