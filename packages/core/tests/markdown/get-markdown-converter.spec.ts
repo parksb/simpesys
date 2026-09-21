@@ -3,7 +3,25 @@ import { expect } from "@std/expect";
 import type MarkdownIt from "markdown-it";
 import mdContainer from "markdown-it-container";
 import { getMarkdownConverter } from "../../src/markdown.ts";
-import { DEFAULT_CONFIG } from "../../src/config.ts";
+import type { DocumentDict } from "../../src/document.ts";
+import { spy } from "@std/testing/mock";
+import { getHighlighter } from "../../src/highlight.ts";
+import { DEFAULT_CONFIG, defineConfig } from "../../src/config.ts";
+
+function documents(markdown: string): DocumentDict {
+  return {
+    index: {
+      filename: "index",
+      title: "Index",
+      markdown,
+      html: "",
+      breadcrumbs: [],
+      children: [],
+      referred: [],
+      type: "subject",
+    },
+  };
+}
 
 describe("getMarkdownConverter", () => {
   describe("toc.listType", () => {
@@ -108,5 +126,91 @@ describe("getMarkdownConverter", () => {
 
       expect(html).toContain('<div class="WARNING">');
     });
+  });
+});
+
+describe("highlighting reuse", () => {
+  it("reuses highlighted output across independently created converters", async () => {
+    const config = defineConfig({
+      docs: { code: { languages: ["typescript"] } },
+    });
+
+    const highlighter = await getHighlighter(
+      ["typescript"],
+      config.docs.code.themes,
+    );
+
+    const codeToHtml = spy(highlighter, "codeToHtml");
+
+    try {
+      const [first, second] = await Promise.all([
+        getMarkdownConverter(config),
+        getMarkdownConverter(config),
+      ]);
+
+      const markdown =
+        "```typescript\nconst cachedValue: number = 918273;\n```";
+
+      const html = first.render(markdown);
+
+      expect(second.render(markdown)).toBe(html);
+      expect(codeToHtml.calls).toHaveLength(1);
+      expect(html).toContain("shiki-themes github-light github-dark");
+    } finally {
+      codeToHtml.restore();
+    }
+  });
+
+  it("skips highlighting for a known document set without fences", async () => {
+    const markdown = "# Heading\n\nPlain text and `inline code`.";
+    const md = await getMarkdownConverter(DEFAULT_CONFIG, documents(markdown));
+
+    expect(md.options.highlight).toBeFalsy();
+    expect(md.render(markdown)).toContain("<code>inline code</code>");
+  });
+
+  it("honors explicit languages even when the document set has no fences", async () => {
+    const config = defineConfig({ docs: { code: { languages: ["python"] } } });
+    const md = await getMarkdownConverter(config, documents("# Heading"));
+
+    expect(md.render("```python\nprint(42)\n```")).toContain("shiki-themes");
+  });
+
+  it("keeps the highlighter for unlabelled backtick and tilde fences", async () => {
+    for (const fence of ["```", "~~~"]) {
+      const markdown = `${fence}\n<script> & text\n${fence}`;
+
+      const md = await getMarkdownConverter(
+        DEFAULT_CONFIG,
+        documents(markdown),
+      );
+
+      const html = md.render(markdown);
+      expect(html).toContain("shiki-themes");
+      expect(html).not.toContain("<script>");
+    }
+  });
+
+  it("keeps converter hooks independent while sharing highlighting", async () => {
+    const config = defineConfig({
+      docs: { code: { languages: ["javascript"] } },
+      hooks: {
+        configureMarkdownConverter: (md) => {
+          const highlight = md.options.highlight!;
+          md.options.highlight = (...args) =>
+            `<aside>${highlight(...args)}</aside>`;
+        },
+      },
+    });
+
+    const custom = await getMarkdownConverter(config);
+    const standard = await getMarkdownConverter(defineConfig({
+      docs: { code: { languages: ["javascript"] } },
+    }));
+
+    const markdown = "```javascript\nconst hookIsolation = 42;\n```";
+
+    expect(custom.render(markdown)).toContain("<aside>");
+    expect(standard.render(markdown)).not.toContain("<aside>");
   });
 });

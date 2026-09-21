@@ -1,6 +1,6 @@
 {
   "name": "@simpesys/core",
-  "version": "0.6.1-canary.9",
+  "version": "0.6.1-canary.10",
   "license": "GPL-3.0-or-later",
   "exports": "./mod.ts",
   "publish": {

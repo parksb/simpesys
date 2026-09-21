@@ -1,4 +1,5 @@
 import MarkdownIt from "markdown-it";
+import { isSpecialLang } from "@shikijs/core";
 import mdFootnote from "markdown-it-footnote";
 import mdTex from "markdown-it-texmath";
 import mdAnchor from "markdown-it-anchor";
@@ -11,14 +12,13 @@ import mdEmbed from "markdown-it-html5-embed";
 import mdContainer from "markdown-it-container";
 import mdImSize from "markdown-it-imsize";
 import { fromHighlighter as mdShikiCore } from "@shikijs/markdown-it/core";
-import { createHighlighterCore } from "@shikijs/core";
 import type { HighlighterGeneric } from "shiki";
-import { createOnigurumaEngine } from "@shikijs/engine-oniguruma";
 import { full as mdEmoji } from "markdown-it-emoji";
 import * as katex from "katex";
 
 import type { Document, DocumentDict, Reference } from "./document.ts";
 import type { Config } from "./config.ts";
+import { cacheHighlight, getHighlighter } from "./highlight.ts";
 import { getLink, getLinkRegex, resolveLink } from "./link.ts";
 
 /**
@@ -39,23 +39,12 @@ export async function getMarkdownConverter(
       : [];
   }
 
-  const highlighter = await createHighlighterCore({
-    themes: [
-      import(`@shikijs/themes/${config.docs.code.themes.light}`),
-      import(`@shikijs/themes/${config.docs.code.themes.dark}`),
-    ],
-    langs: codeLanguages.map((lang) => import(`@shikijs/langs/${lang}`)),
-    engine: createOnigurumaEngine(
-      import("@shikijs/engine-oniguruma/wasm-inlined"),
-    ),
-  });
+  const documentList = Object.values(documents);
 
-  const shiki = mdShikiCore(highlighter as HighlighterGeneric<string, string>, {
-    themes: {
-      light: config.docs.code.themes.light,
-      dark: config.docs.code.themes.dark,
-    },
-  });
+  const needsHighlighting = config.docs.code.languages !== "auto" ||
+    documentList.length === 0 ||
+    Boolean(config.hooks?.configureMarkdownConverter) ||
+    documentList.some((document) => /`{3,}|~{3,}/.test(document.markdown));
 
   const md = MarkdownIt({
     html: true,
@@ -65,9 +54,32 @@ export async function getMarkdownConverter(
     linkify: true,
     typographer: true,
     quotes: "“”‘’",
-  })
-    .use(shiki)
-    .use(mdFootnote)
+  });
+
+  if (needsHighlighting) {
+    const themes = { ...config.docs.code.themes };
+    const highlighter = await getHighlighter(codeLanguages, themes);
+
+    md.use(mdShikiCore(highlighter as HighlighterGeneric<string, string>, {
+      themes,
+    }));
+
+    const highlight = md.options.highlight;
+    if (typeof highlight === "function") {
+      const cachedHighlight = cacheHighlight(highlight, themes);
+      const loadedLanguages = new Set(highlighter.getLoadedLanguages());
+
+      md.options.highlight = (code, language, attrs) => {
+        if (!isSpecialLang(language) && !loadedLanguages.has(language)) {
+          language = "text";
+        }
+
+        return cachedHighlight(code, language, attrs);
+      };
+    }
+  }
+
+  md.use(mdFootnote)
     .use(mdInlineComment)
     .use(mdMermaid)
     .use(mdEmoji)
@@ -401,7 +413,7 @@ const stripCodeBlocks = (markdown: string): string => {
  */
 const extractCodeLanguages = (markdowns: string[]): string[] => {
   const langs = new Set<string>();
-  const fence = /^```(\w+)/gm;
+  const fence = /^ {0,3}(?:`{3,}|~{3,})[ \t]*([^\s`~]+)/gm;
 
   for (const md of markdowns) {
     for (const match of md.matchAll(fence)) {
