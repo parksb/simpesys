@@ -5,7 +5,7 @@ import mdContainer from "markdown-it-container";
 import { getMarkdownConverter } from "../../src/markdown.ts";
 import type { DocumentDict } from "../../src/document.ts";
 import { spy } from "@std/testing/mock";
-import { getHighlighter } from "../../src/highlight.ts";
+import { getHighlighter } from "../../src/highlight/mod.ts";
 import { DEFAULT_CONFIG, defineConfig } from "../../src/config.ts";
 
 function documents(markdown: string): DocumentDict {

@@ -1,6 +1,6 @@
 import { describe, it } from "@std/testing/bdd";
 import { expect } from "@std/expect";
-import { getHighlighter } from "../../src/highlight.ts";
+import { getHighlighter } from "../../src/highlight/mod.ts";
 
 const themes = { light: "github-light", dark: "github-dark" };
 

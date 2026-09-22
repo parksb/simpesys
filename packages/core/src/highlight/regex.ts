@@ -1,7 +1,12 @@
 import type { PatternScanner, RegexEngine } from "@shikijs/core";
 
 type Match = ReturnType<PatternScanner["findNextMatchSync"]>;
-type SharedScanner = { scanner: PatternScanner; users: number };
+
+type SharedScanner = {
+  scanner: PatternScanner;
+  users: number;
+};
+
 type MatchCache = {
   scanners: Map<PatternScanner, Map<string, Map<string, Match>>>;
   bytes: number;
@@ -98,7 +103,9 @@ export function cacheRegexes(engine: RegexEngine) {
 
   function withCachedMatches<T>(render: () => T): T {
     const previous = matchCache;
+
     matchCache = { scanners: new Map(), bytes: 0 };
+
     try {
       return render();
     } finally {

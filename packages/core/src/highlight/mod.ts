@@ -2,8 +2,9 @@ import { createHighlighterCore, isSpecialLang } from "@shikijs/core";
 import { createOnigurumaEngine } from "@shikijs/engine-oniguruma";
 import { languageAliasNames, languageNames } from "@shikijs/langs";
 import type MarkdownIt from "markdown-it";
+import { sharePatterns } from "./patterns.ts";
 import { cacheRegexes } from "./regex.ts";
-import type { Config } from "./config.ts";
+import type { Config } from "../config.ts";
 
 type Highlighter = Awaited<ReturnType<typeof createHighlighterCore>>;
 type Themes = Config["docs"]["code"]["themes"];
@@ -126,8 +127,10 @@ function createCache(maxBytes: number) {
 
 async function createHighlighter(): Promise<Highlighter> {
   const engine = cacheRegexes(
-    await createOnigurumaEngine(
-      import("@shikijs/engine-oniguruma/wasm-inlined"),
+    sharePatterns(
+      await createOnigurumaEngine(
+        import("@shikijs/engine-oniguruma/wasm-inlined"),
+      ),
     ),
   );
 
@@ -138,6 +141,7 @@ async function createHighlighter(): Promise<Highlighter> {
   });
 
   const codeToHtml = highlighter.codeToHtml;
+
   highlighter.codeToHtml = (...args) =>
     engine.withCachedMatches(() => codeToHtml(...args));
 

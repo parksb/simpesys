@@ -18,7 +18,7 @@ import * as katex from "katex";
 
 import type { Document, DocumentDict, Reference } from "./document.ts";
 import type { Config } from "./config.ts";
-import { cacheHighlight, getHighlighter } from "./highlight.ts";
+import { cacheHighlight, getHighlighter } from "./highlight/mod.ts";
 import { getLink, getLinkRegex, resolveLink } from "./link.ts";
 
 /**
