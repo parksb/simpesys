@@ -12,11 +12,17 @@ export interface Cache {
   documents: Record<string, { hash: string; html: string }>;
 }
 
+/**
+ * Options for reusing and invalidating cached document.
+ */
 export interface CacheOptions {
   version?: string;
   previous?: Cache;
 }
 
+/**
+ * Create a cache that restores unchanged document.
+ */
 export async function createCache(
   config: Config,
   options: CacheOptions = {},
