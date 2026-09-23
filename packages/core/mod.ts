@@ -1,4 +1,5 @@
 export { Simpesys } from "./src/main.ts";
+export type { Cache, CacheOptions } from "./src/cache.ts";
 export type {
   Breadcrumb,
   Document,

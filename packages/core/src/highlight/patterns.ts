@@ -200,7 +200,8 @@ function canReuseSearch(
     return false;
   }
 
-  return previous.match === null || previous.match.captureIndices[0].start >= position;
+  return previous.match === null ||
+    previous.match.captureIndices[0].start >= position;
 }
 
 function findEarliestMatch(

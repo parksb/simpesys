@@ -14,6 +14,7 @@ import {
 import type { Document, DocumentCandidate, DocumentDict } from "./document.ts";
 import { type Config, type DeepPartial, DEFAULT_CONFIG } from "./config.ts";
 import { getLinkRegex } from "./link.ts";
+import { type Cache, type CacheOptions, createCache } from "./cache.ts";
 import {
   getFileMetadata,
   getFreshMetadata,
@@ -24,6 +25,7 @@ import {
 export class Simpesys {
   private documents: DocumentDict = {};
   private written: Set<string> = new Set([]);
+  private cache?: Cache;
 
   private config: Config;
 
@@ -34,12 +36,24 @@ export class Simpesys {
   /**
    * Initialize the system by loading and processing documents.
    */
-  async init(options: { syncMetadata?: boolean } = {}): Promise<Simpesys> {
+  async init(
+    options: {
+      syncMetadata?: boolean;
+      cache?: boolean | CacheOptions;
+    } = {},
+  ): Promise<Simpesys> {
     if (this.written.size > 0) {
       throw new Error("Simpesys has already been initialized.");
     }
 
     this.written.add(this.config.docs.root);
+
+    const cache = options.cache
+      ? await createCache(
+        this.config,
+        typeof options.cache === "object" ? options.cache : {},
+      )
+      : undefined;
 
     const rawMetadata = await loadMetadata(this.config);
 
@@ -144,10 +158,7 @@ export class Simpesys {
       }
     }
 
-    const markdownConverter = await getMarkdownConverter(
-      this.config,
-      this.documents,
-    );
+    const documentsToRender: DocumentDict = {};
 
     for (const document of Object.values(this.documents)) {
       document.markdown = appendReferred(
@@ -159,6 +170,22 @@ export class Simpesys {
 
       document.markdown = prependToc(this.config, document.markdown);
 
+      if (!cache || !await cache.restore(document)) {
+        documentsToRender[document.filename] = document;
+      }
+    }
+
+    if (Object.keys(documentsToRender).length === 0) {
+      this.cache = cache?.snapshot;
+      return this;
+    }
+
+    const markdownConverter = await getMarkdownConverter(
+      this.config,
+      documentsToRender,
+    );
+
+    for (const document of Object.values(documentsToRender)) {
       document.html = markdownConverter.render(document.markdown);
 
       document.html = withHTMLCodePreserved(document.html, (html) =>
@@ -173,7 +200,11 @@ export class Simpesys {
             (_: string, key: string) =>
               this.config.hooks.renderInternalLink(key),
           ));
+
+      cache?.save(document);
     }
+
+    this.cache = cache?.snapshot;
 
     return this;
   }
@@ -183,6 +214,13 @@ export class Simpesys {
    */
   getDocuments(): DocumentDict {
     return this.documents;
+  }
+
+  /**
+   * Get the render snapshot when caching was enabled.
+   */
+  getCache(): Cache | undefined {
+    return this.cache;
   }
 
   /**

@@ -8,3 +8,4 @@ Simpesys provides features for building digital gardens.
 - [[features/backlinks]]
 - [[features/metadata]]
 - [[features/markdown]]
+- [[features/cache]]
