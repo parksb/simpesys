@@ -1,6 +1,7 @@
 import { createHighlighterCore, isSpecialLang } from "@shikijs/core";
 import { createOnigurumaEngine } from "@shikijs/engine-oniguruma";
-import { languageAliasNames, languageNames } from "@shikijs/langs";
+import { type BundledLanguage, bundledLanguages } from "shiki/langs";
+import { type BundledTheme, bundledThemes } from "shiki/themes";
 import type MarkdownIt from "markdown-it";
 import { sharePatterns } from "./patterns.ts";
 import { cacheRegexes } from "./regex.ts";
@@ -41,7 +42,6 @@ export function cacheHighlight(
 
 function createHighlighterLoader() {
   let highlighterPromise: Promise<Highlighter> | undefined;
-  const supportedLanguages = new Set([...languageNames, ...languageAliasNames]);
 
   return async function getHighlighter(
     languages: string[],
@@ -56,6 +56,7 @@ function createHighlighterLoader() {
     const loadedLanguages = new Set(highlighter.getLoadedLanguages());
     const loadedThemes = new Set(highlighter.getLoadedThemes());
 
+    const supportedLanguages = new Set(Object.keys(bundledLanguages));
     const missingLanguages = [...new Set(languages)].filter((language) =>
       !isSpecialLang(language) &&
       !loadedLanguages.has(language) &&
@@ -69,11 +70,11 @@ function createHighlighterLoader() {
     await Promise.all([
       highlighter.loadLanguage(
         ...missingLanguages.map((language) =>
-          import(`@shikijs/langs/${language}`)
+          bundledLanguages[language as BundledLanguage]
         ),
       ),
       highlighter.loadTheme(
-        ...missingThemes.map((theme) => import(`@shikijs/themes/${theme}`)),
+        ...missingThemes.map((theme) => bundledThemes[theme as BundledTheme]),
       ),
     ]);
 

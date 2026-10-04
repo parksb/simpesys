@@ -5,6 +5,17 @@ import { getHighlighter } from "../../src/highlight/mod.ts";
 const themes = { light: "github-light", dark: "github-dark" };
 
 describe("shared highlighter", () => {
+  it("loads only requested languages and themes", async () => {
+    const highlighter = await getHighlighter(["typescript"], themes);
+
+    expect(highlighter.getLoadedLanguages()).toContain("typescript");
+    expect(highlighter.getLoadedLanguages()).not.toContain("python");
+    expect(highlighter.getLoadedThemes().sort()).toEqual([
+      "github-dark",
+      "github-light",
+    ]);
+  });
+
   it("shares one registry across concurrent language and theme loads", async () => {
     const [first, second] = await Promise.all([
       getHighlighter(["typescript", "ts"], themes),
